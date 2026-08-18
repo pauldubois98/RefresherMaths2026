@@ -1,0 +1,403 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{stmaryrd}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\txtand}{\text{ and }}
+\newcommand{\txtor}{\text{ or }}
+\newcommand{\lxor}{\veebar}
+
+%opening
+\title{Notes on Differential Equations}
+\author{DSBA Mathematics Refresher 2025}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		
+	\end{abstract}
+	
+	\section{Applications of Differential Equations}
+	Differential equations play a significant role in various applications within data science and business. These applications demonstrate the versatility of differential equations in modeling complex, dynamic systems across diverse fields, aiding in decision-making and strategic planning.
+	\subsection{Predictive Modeling in Finance}
+	\paragraph{Black-Scholes Model}\noindent\\
+	This is a partial differential equation used to estimate the price of options and other financial derivatives.
+	It helps traders and analysts predict the future behavior of asset prices and manage financial risk.
+	\subsection{Economics and Market Dynamics}
+	\begin{itemize}
+		\item \textbf{Macroeconomic Modeling}\noindent\\
+		Differential equations are used to model economic growth, inflation, and interest rates.
+		For example, the Solow growth model uses differential equations to describe how capital accumulation and technological progress impact economic growth.
+		\item \textbf{Epidemic Models}\\
+		In business, especially during crises like pandemics, models such as SIR (Susceptible-Infected-Recovered) are used to predict the spread of disease and its impact on markets and workforce productivity.
+	\end{itemize}
+	\subsection{Customer Behavior and Marketing}
+	\begin{itemize}
+		\item \textbf{Diffusion Models}\noindent\\
+		Differential equations are used to model the adoption of new products and technologies in markets.
+		The Bass Diffusion Model, for instance, predicts the rate at which a new product will be adopted over time, helping companies strategize marketing and sales efforts.
+		\item \textbf{Churn Prediction}\noindent\\
+		Models based on differential equations can predict customer churn by analyzing the rates of customer acquisition and departure over time, allowing businesses to implement targeted retention strategies.
+	\end{itemize}
+	\subsection{Supply Chain and Inventory Management}
+	\paragraph{Dynamic Systems}\noindent\\
+	Differential equations are used to model inventory levels over time, helping businesses optimize ordering strategies and reduce holding costs.
+	The equations can account for varying demand rates and lead times, improving supply chain efficiency.
+	\subsection{Environmental Analysis}
+	\paragraph{Time Series Analysis}\noindent\\
+	Differential equations are used to model and predict changes in environmental data, such as air quality, temperature, or pollution levels.
+	These models help businesses in energy and agriculture make data-driven decisions.
+
+	\subsection{A Concrete Example: Modeling a Customer Base}
+
+	\noindent \textbf{Example:}
+	A subscription company acquires $a = 500$ new customers every month, and loses each month a fraction $b = 10\% = 0.1$ of the customers it currently has.
+	Writing $N(t)$ for the number of customers at time $t$ (in months), the \textit{rate of change} of the customer base is
+	$$
+	\underbrace{\frac{dN}{dt}}_{\text{change in customers}} = \underbrace{a}_{\text{acquired}} - \underbrace{b \, N}_{\text{churned}}
+	$$
+	This is a first-order differential equation; we will see in the next section how to solve it (with the integrating factor $\text{IF} = e^{bt}$).
+	Starting from $N(0) = 2000$ customers, the solution turns out to be:
+	$$
+	N(t) = \frac{a}{b} + \left(N(0) - \frac{a}{b}\right)e^{-bt} = 5000 - 3000 \, e^{-0.1 t}
+	$$
+	Note what the model tells the business: the customer base does not grow forever, but converges to the equilibrium $\frac{a}{b} = 5000$ customers, at a speed governed by the churn rate $b$.
+	Doubling the acquisition rate $a$ doubles the equilibrium; halving the churn rate $b$ also doubles it.
+	
+	
+	
+	\section{First-Order Differential Equations}
+	
+	A first-order differential equation can often be written in the form:
+	$$
+	\frac{dy}{dx} + P(x) \cdot y = Q(x)
+	$$
+	To solve this, we use an integrating factor "$\text{IF}$" which is defined as:
+	$$
+	\text{IF} = e^{\int P(x) \, dx}
+	$$
+	Multiplying both sides of the differential equation by $\text{IF}$ gives:
+	$$
+	\text{IF} \cdot \frac{dy}{dx} + \text{IF} \cdot P(x) \cdot y = \text{IF} \cdot Q(x)
+	$$
+	The left side of the equation is now the derivative of the product $\text{IF} \cdot y$:
+	$$
+	\frac{d}{dx}\left[\text{IF} \cdot y\right] = \text{IF} \cdot Q(x)
+	$$
+	Integrating both sides with respect to $x$:
+	$$
+	\text{IF} \cdot y = \int \text{IF} \cdot Q(x) \, dx + C
+	$$
+	Finally, solve for $y(x)$:
+	$$
+	y(x) = \frac{1}{\text{IF}}\left[\int \text{IF} \cdot Q(x) \, dx + C\right]
+	$$
+
+	\noindent \textbf{Example:}
+	Solve
+	$$
+	\frac{dy}{dx} + 2x \, y = x
+	$$
+	Here $P(x) = 2x$ and $Q(x) = x$, so the integrating factor is
+	$$
+	\text{IF} = e^{\int 2x \, dx} = e^{x^2}
+	$$
+	Multiplying the equation by $e^{x^2}$:
+	$$
+	e^{x^2}\frac{dy}{dx} + 2x \, e^{x^2} y = x \, e^{x^2}
+	\qquad \Longleftrightarrow \qquad
+	\frac{d}{dx}\left[e^{x^2} y\right] = x \, e^{x^2}
+	$$
+	Integrating both sides (the right-hand side by substitution $u = x^2$):
+	$$
+	e^{x^2} y = \frac{1}{2} e^{x^2} + C
+	\qquad \Longleftrightarrow \qquad
+	y(x) = \frac{1}{2} + C e^{-x^2}, \qquad C \in \R
+	$$
+	\textit{Check:} $y' = -2Cx e^{-x^2}$, so $y' + 2xy = -2Cx e^{-x^2} + x + 2Cx e^{-x^2} = x$. \checkmark
+
+	\noindent \textbf{Example (the customer base of Section 1):}
+	The equation $\frac{dN}{dt} = a - bN$ is rewritten in the standard form as $\frac{dN}{dt} + bN = a$, so $\text{IF} = e^{\int b \, dt} = e^{bt}$ and
+	$$
+	\frac{d}{dt}\left[e^{bt} N\right] = a \, e^{bt}
+	\quad \Longrightarrow \quad
+	e^{bt} N = \frac{a}{b} e^{bt} + C
+	\quad \Longrightarrow \quad
+	N(t) = \frac{a}{b} + C e^{-bt}
+	$$
+
+	\paragraph{Initial Conditions}
+	
+	Consider the same first-order equation with an initial condition $y(x_0) = y_0$.
+	After finding the general solution as in the previous section:
+	$$
+	y(x) = \frac{1}{\text{IF}}\left[\int \text{IF} \cdot Q(x) \, dx + C\right]
+	$$
+	Apply the initial condition to find $C$:
+	$$
+	y(x_0) = \frac{1}{\text{IF}(x_0)}\left[\int \text{IF}Q(x) \, dx \mid_{x_0} + C\right] = y_0
+	$$
+	Solve for $C$ and conclude.
+
+	\noindent \textbf{Example:}
+	Take the equation of the previous example, $\frac{dy}{dx} + 2xy = x$, with the initial condition $y(0) = 2$.
+	The general solution is $y(x) = \frac{1}{2} + C e^{-x^2}$, so
+	$$
+	y(0) = \frac{1}{2} + C e^{0} = \frac{1}{2} + C = 2
+	\qquad \Longrightarrow \qquad
+	C = \frac{3}{2}
+	$$
+	and the solution to the initial value problem is
+	$$
+	y(x) = \frac{1}{2} + \frac{3}{2} e^{-x^2}
+	$$
+
+	\noindent \textbf{Example (the customer base of Section 1):}
+	With $N(t) = \frac{a}{b} + Ce^{-bt}$ and $N(0) = N_0$, we get $\frac{a}{b} + C = N_0$, i.e. $C = N_0 - \frac{a}{b}$, hence
+	$$
+	N(t) = \frac{a}{b} + \left(N_0 - \frac{a}{b}\right) e^{-bt}
+	$$
+	With $a = 500$, $b = 0.1$ and $N_0 = 2000$: $\frac{a}{b} = 5000$ and $N(t) = 5000 - 3000\, e^{-0.1t}$, as announced.
+
+	\section{Separable Differential Equations}
+
+	The integrating factor of the previous section requires the equation to be \textbf{linear} in $y$.
+	When it is not, another method is often available: \textbf{separation of variables}.
+
+	A first-order equation is said to be \textbf{separable} if it can be written in the form
+	$$
+	\frac{dy}{dx} = f(x) \cdot g(y)
+	$$
+	that is, if the right-hand side splits into a part depending only on $x$ and a part depending only on $y$.
+	The method is then to gather each variable on its own side of the equation, and to integrate:
+	$$
+	\frac{dy}{g(y)} = f(x) \, dx
+	\qquad \Longrightarrow \qquad
+	\int \frac{dy}{g(y)} = \int f(x) \, dx
+	$$
+	Both integrals are ordinary integrals in a single variable.
+	One then solves the resulting relation for $y$, if possible, and a single constant of integration $C$ is enough (the two constants can be merged into one).
+
+	\noindent \textbf{Example:}
+	Solve
+	$$
+	\frac{dy}{dx} = x \, y^2
+	$$
+	This equation is \textit{not} linear in $y$ (because of the $y^2$), so the integrating factor does not apply.
+	It is however separable, with $f(x) = x$ and $g(y) = y^2$.
+	Dividing by $y^2$ and integrating:
+	$$
+	\frac{dy}{y^2} = x \, dx
+	\qquad \Longrightarrow \qquad
+	\int \frac{dy}{y^2} = \int x \, dx
+	\qquad \Longrightarrow \qquad
+	-\frac{1}{y} = \frac{x^2}{2} + C, \qquad C \in \R
+	$$
+	Solving for $y$ (and writing $K = 2C$ to simplify):
+	$$
+	y(x) = \frac{-2}{x^2 + K}
+	$$
+	\textit{Check:} $y' = \frac{4x}{(x^2+K)^2}$, and $x y^2 = x \cdot \frac{4}{(x^2+K)^2} = \frac{4x}{(x^2+K)^2}$. \checkmark
+
+	\noindent \textbf{Warning:}
+	dividing by $g(y)$ is only legitimate when $g(y) \neq 0$.
+	The values of $y$ for which $g(y) = 0$ give \textit{constant} solutions that the method silently drops:
+	here $y(x) = 0$ is also a solution of $y' = xy^2$, and it is not of the form found above.
+	Always check whether such constant solutions exist.
+
+	\noindent \textbf{Example (the two methods agree):}
+	The equation $\frac{dy}{dx} = 5y$ is both linear and separable.
+	Separating:
+	$$
+	\frac{dy}{y} = 5 \, dx
+	\qquad \Longrightarrow \qquad
+	\ln|y| = 5x + C
+	\qquad \Longrightarrow \qquad
+	|y| = e^{5x + C} = e^{C} e^{5x}
+	$$
+	so $y(x) = \alpha e^{5x}$, with $\alpha = \pm e^{C}$ an arbitrary non-zero constant --- and $\alpha = 0$ is the constant solution $y = 0$ dropped when dividing by $y$.
+	This is the usual exponential growth (or decay, if the coefficient is negative) that appears in most of the models of Section 1.
+
+	\paragraph{Second-Order Equations}
+	\noindent\\
+	The same idea sometimes works on a second-order equation in which $y$ itself does not appear, only its derivatives.
+	Substituting
+	$$
+	z = \frac{dy}{dx}
+	\qquad \text{so that} \qquad
+	\frac{d^2y}{dx^2} = \frac{dz}{dx}
+	$$
+	turns it into a \textit{first-order} equation in $z$, which may be separable.
+	Once $z$ is found, a last integration gives $y$ (and hence a second constant of integration).
+
+	\section{(Homogeneous) Second-Order Linear Differential Equations}
+	
+	A second-order homogeneous linear differential equation is of the form:
+	$$
+	a\frac{d^2y}{dx^2} + b\frac{dy}{dx} + cy = 0
+	$$
+	The characteristic equation associated with this differential equation is:
+	$$
+	ar^2 + br + c = 0
+	$$
+	The nature of the solutions depends on the discriminant $\Delta = b^2 - 4ac$:
+	\begin{itemize}
+		\item If $\Delta > 0$, the roots $r_1$ and $r_2$ are real and distinct.
+		The solution is: $y(x) = C_1e^{r_1x} + C_2e^{r_2x}$.
+		\item If $\Delta = 0$, the roots are real and repeated $r_1 = r_2 = r$.
+		The solution is: $y(x) = (C_1 + C_2x)e^{rx}$.
+		\item If $\Delta < 0$, the roots are complex $r_{1,2} = \alpha \pm i\beta$.
+		The solution is: $y(x) = e^{\alpha x}(C_1\cos(\beta x) + C_2\sin(\beta x))$.
+	\end{itemize}
+
+	\noindent \textbf{Example ($\Delta > 0$):}
+	For $y'' - y' - 6y = 0$, the characteristic equation is $r^2 - r - 6 = 0$, with $\Delta = 1 + 24 = 25 > 0$, so
+	$$
+	r = \frac{1 \pm 5}{2} \quad \Longrightarrow \quad r_1 = 3 \ \text{ and } \ r_2 = -2
+	$$
+	and the general solution is
+	$$
+	y(x) = C_1 e^{3x} + C_2 e^{-2x}, \qquad C_1, C_2 \in \R
+	$$
+
+	\noindent \textbf{Example ($\Delta = 0$):}
+	For $y'' - 6y' + 9y = 0$, the characteristic equation is $r^2 - 6r + 9 = 0$, i.e. $(r-3)^2 = 0$, with $\Delta = 36 - 36 = 0$, so $r = 3$ is a repeated root and
+	$$
+	y(x) = (C_1 + C_2 x) e^{3x}, \qquad C_1, C_2 \in \R
+	$$
+	Note the extra factor $x$: without it we would only get \textit{one} family of solutions, whereas a second-order equation always has \textit{two} independent ones.
+
+	\noindent \textbf{Example ($\Delta < 0$):}
+	For $y'' - 2y' + 10y = 0$, the characteristic equation is $r^2 - 2r + 10 = 0$, with $\Delta = 4 - 40 = -36 < 0$, so
+	$$
+	r = \frac{2 \pm \sqrt{-36}}{2} = \frac{2 \pm 6i}{2} = 1 \pm 3i
+	\qquad \Longrightarrow \qquad \alpha = 1, \ \beta = 3
+	$$
+	and the general solution is
+	$$
+	y(x) = e^{x}\left(C_1 \cos(3x) + C_2 \sin(3x)\right), \qquad C_1, C_2 \in \R
+	$$
+	Complex roots always give oscillations: $\beta$ sets the frequency of the oscillation, and $\alpha$ says whether it is amplified ($\alpha > 0$) or damped ($\alpha < 0$).
+
+	\section{Second-Order Linear Differential Equations}
+	
+	For the general second-order linear differential equation:
+	$$
+	a\frac{d^2y}{dx^2} + b\frac{dy}{dx} + cy = g(x)
+	$$
+	The solution is the sum of the complementary function $y_c(x)$
+	(the solution to the associated homogeneous equation)
+	and a particular solution $y_p(x)$:
+	$$
+	y(x) = y_c(x) + y_p(x)
+	$$
+	
+	The method for finding $y_p(x)$ depends on the form of $g(x)$:
+	\begin{itemize}
+		\item If $g(x)$ is a polynomial, use the method of undetermined coefficients.
+		\item If $g(x)$ is of an exponential or trigonometric form, use an answer of a similar form.
+		\item For other forms of $g(x)$, the method of variation of parameters can be used.
+	\end{itemize}
+
+	\noindent \textbf{Example ($g$ polynomial):}
+	Solve $y'' - y' - 6y = 12x + 2$.
+
+	The associated homogeneous equation was solved above:
+	$$
+	y_c(x) = C_1 e^{3x} + C_2 e^{-2x}
+	$$
+	Since $g(x) = 12x + 2$ is a polynomial of degree 1, we look for a particular solution of the same form, $y_p(x) = ax + b$.
+	Then $y_p' = a$, $y_p'' = 0$, and
+	$$
+	y_p'' - y_p' - 6y_p = -a - 6(ax + b) = -6a \, x + (-a - 6b)
+	$$
+	We want this to equal $12x + 2$ \textit{for every $x$}, so we identify the coefficients:
+	$$
+	\begin{cases}
+		-6a = 12 \\
+		-a - 6b = 2
+	\end{cases}
+	\qquad \Longrightarrow \qquad
+	a = -2, \quad b = 0
+	$$
+	so $y_p(x) = -2x$, and the general solution is
+	$$
+	y(x) = y_c(x) + y_p(x) = C_1 e^{3x} + C_2 e^{-2x} - 2x
+	$$
+
+	\noindent \textbf{Example ($g$ exponential):}
+	Solve $y'' - y' - 6y = 4e^{x}$.
+
+	The complementary function $y_c$ is the same as above.
+	Since $g(x) = 4e^x$ is an exponential, we look for $y_p(x) = A e^{x}$; then $y_p' = y_p'' = Ae^x$, and
+	$$
+	y_p'' - y_p' - 6y_p = (A - A - 6A) e^{x} = -6A \, e^{x} = 4 e^{x}
+	\qquad \Longrightarrow \qquad
+	A = -\frac{2}{3}
+	$$
+	so the general solution is
+	$$
+	y(x) = C_1 e^{3x} + C_2 e^{-2x} - \frac{2}{3} e^{x}
+	$$
+	\textit{Warning:} this works because $e^{x}$ is not itself a solution of the homogeneous equation.
+	If $g(x)$ had been $4e^{3x}$, the guess $Ae^{3x}$ would give $0 = 4e^{3x}$, which is impossible; one then tries $y_p(x) = Ax e^{3x}$ instead (the same trick as for a repeated root).
+
+	\paragraph{Initial Conditions}
+	
+	Given the general solution:
+	$$
+	y(x) = y_c(x) + y_p(x)
+	$$
+	And initial conditions $y(x_0) = y_0$ and $\frac{dy}{dx}\Big|_{x=x_0} = y'_0$, we determine the constants $C_1$ and $C_2$ in $y_c(x)$:
+	$$
+	y(x_0) = y_c(x_0) + y_p(x_0) = y_0
+	$$
+	$$
+	\frac{dy}{dx}\Big|_{x=x_0} = y'_c(x_0) + y'_p(x_0) = y'_0
+	$$
+	Solving these two equations will yield the specific values of $C_1$ and $C_2$ that satisfy the initial conditions, leading to the particular solution for the problem.
+
+	\noindent \textbf{Example:}
+	Take the equation $y'' - y' - 6y = 12x + 2$ solved above, with the initial conditions $y(0) = 1$ and $y'(0) = 0$.
+
+	The general solution and its derivative are
+	$$
+	y(x) = C_1 e^{3x} + C_2 e^{-2x} - 2x
+	\qquad \text{and} \qquad
+	y'(x) = 3C_1 e^{3x} - 2C_2 e^{-2x} - 2
+	$$
+	The initial conditions give
+	$$
+	\begin{cases}
+		y(0) = C_1 + C_2 = 1 \\
+		y'(0) = 3C_1 - 2C_2 - 2 = 0
+	\end{cases}
+	$$
+	Substituting $C_2 = 1 - C_1$ in the second equation: $3C_1 - 2 + 2C_1 = 2$, i.e. $5C_1 = 4$, so
+	$$
+	C_1 = \frac{4}{5}, \qquad C_2 = \frac{1}{5}
+	$$
+	and the solution of the initial value problem is
+	$$
+	y(x) = \frac{4}{5} e^{3x} + \frac{1}{5} e^{-2x} - 2x
+	$$
+	\textit{Check:} $y(0) = \frac{4}{5} + \frac{1}{5} = 1$ \checkmark \ and $y'(0) = \frac{12}{5} - \frac{2}{5} - 2 = 2 - 2 = 0$. \checkmark
+
+	\textit{Note:} the two constants are found \textit{at the very end}, once the particular solution $y_p$ has been added.
+	Applying the initial conditions to $y_c$ alone is a common mistake, and gives a wrong answer.
+	
+	
+\end{document}
