@@ -1,0 +1,420 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{stmaryrd}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\txtand}{\text{ and }}
+\newcommand{\txtor}{\text{ or }}
+\newcommand{\lxor}{\veebar}
+
+%opening
+\title{Notes on Constrained Optimization}
+\author{DSBA Mathematics Refresher 2026}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		
+	\end{abstract}
+	
+	This session will explore different methods for constrained optimization, with a particular focus on the Lagrange multiplier technique.
+	
+	\section{Unconstrained Optimization}
+	
+	Unconstrained optimization refers to the problem of optimizing a function without any restrictions or constraints on the variables.
+	Mathematically, this can be expressed as:
+	$$
+	\text{Find } \mathbf{x}^* \text{ such that } f(\mathbf{x}^*) = \min_{\mathbf{x}} f(\mathbf{x})
+	$$
+	where $f(\mathbf{x})$ is the objective function.
+	
+	The necessary condition for \(\mathbf{x}^*\) to be an extremum is that the gradient of $f$ at $\mathbf{x}^*$ is zero:
+	$$
+	\nabla f(\mathbf{x}^*) = \mathbf{0}
+	$$
+	
+	\subsection{Direct Calculation Method}
+	The direct method involves taking the derivative of the function with respect to each variable, setting these derivatives equal to zero, and solving the resulting system of equations.
+	
+	\textbf{Example:}
+	\noindent\\
+	Consider the function $f(x, y) = x^2 + y^2$. To find the minimum, we calculate:
+	$$
+	\frac{\partial f}{\partial x} = 2x, \quad \frac{\partial f}{\partial y} = 2y
+	$$
+	Setting these equal to zero, we get:
+	$$
+	2x = 0 \quad \text{and} \quad 2y = 0
+	$$
+	This gives $x = 0$ and $y = 0$, which is the minimum point.
+	
+	\subsection{Iterative Process}
+	In a previous session, we explored iterative process to find the extremum of a function.
+	This is often used when solving $\nabla f(\mathbf{x}^*) = \mathbf{0}$ can not be done in reasonable time.
+	
+	\section{Constrained Optimization}
+	In many practical problems, the optimization process is subject to certain constraints.
+	These constraints can be either equality or inequality constraints.
+	
+	\subsection{Equality Constrained Optimization}
+	Equality constrained optimization problems can be expressed as:
+	$$
+	\text{Minimize } f(\mathbf{x})
+	\quad
+	\text{subject to}
+	\quad
+	g_i(\mathbf{x}) = 0
+	\quad
+	\text{for } i = 1, \dots, m
+	$$
+	
+	\subsubsection{Direct Calculation Method}
+	For some simple problems, we can solve the constraint explicitly and substitute it back into the objective function to reduce the problem to an unconstrained optimization problem.
+	
+	\textbf{Example:}
+	Minimize $f(x, y) = x^2 + y^2$ subject to the constraint $x + y = 1$.
+	\\
+	Solve the constraint for $y = 1 - x$, and substitute into $f(x, y)$:
+	$$
+	f(x, 1-x) = x^2 + (1-x)^2 = 2x^2 - 2x + 1
+	$$
+	Minimize the resulting function by finding the derivative and setting it to zero:
+	$$
+	\frac{d}{dx}(2x^2 - 2x + 1) = 4x - 2 = 0
+	$$
+	This gives $x = \frac{1}{2}$, and hence $y = \frac{1}{2}$.
+	
+	\subsubsection{Lagrange Multiplier Method}
+	The Lagrange multiplier method introduces an auxiliary variable (the Lagrange multiplier) to incorporate the constraints into the objective function.
+	
+	\textbf{Lagrange Function:}
+	$$
+	\mathcal{L}(\mathbf{x}, \lambda) = f(\mathbf{x}) - \sum_{i=1}^m \lambda_i g_i(\mathbf{x})
+	$$
+	To find the stationary points, we solve the system
+	$$
+	\nabla \mathcal{L}(\mathbf{x}, \lambda) = \mathbf{0}
+	$$
+	where the gradient is taken with respect to \textit{all} the variables: the $\mathbf{x}$ \textbf{and} the multipliers $\lambda_i$.
+
+	\textit{On the sign:} some textbooks write $f + \sum \lambda_i g_i$ instead.
+	This changes nothing except the sign of the $\lambda_i$, since $\lambda_i$ is unknown anyway.
+	We use the minus sign throughout this course because it is the convention that makes the sign condition of the inequality case (Section 2.2) come out as $\lambda \geq 0$.
+
+	\subsubsection{Why Does It Work?}
+
+	The method looks like a trick pulled out of a hat: we add a term that is \textit{zero anyway} on the constraint (since $g_i(\mathbf{x}) = 0$ there), and suddenly the constrained problem becomes an unconstrained one.
+	Here is where it comes from.
+
+	\paragraph{Step 1: a gradient is perpendicular to its level sets.}
+	Let $\mathbf{x}(t)$ be a path that stays inside the constraint set, so that
+	$$
+	g(\mathbf{x}(t)) = 0 \qquad \text{for every } t
+	$$
+	Differentiating this identity with respect to $t$ (chain rule):
+	$$
+	\nabla g(\mathbf{x}(t)) \cdot \mathbf{x}'(t) = 0
+	$$
+	So $\nabla g$ is perpendicular to every direction in which we may travel while respecting the constraint.
+	In other words, $\nabla g$ is perpendicular to the constraint curve (or surface).
+
+	\paragraph{Step 2: at a constrained optimum, $f$ does not change along the constraint.}
+	Suppose $\mathbf{x}^*$ minimizes $f$ among the points satisfying the constraint, and let $\mathbf{x}(t)$ be any path inside the constraint set with $\mathbf{x}(0) = \mathbf{x}^*$.
+	The function of one variable
+	$$
+	t \longmapsto f(\mathbf{x}(t))
+	$$
+	then has a minimum at $t = 0$, so its derivative vanishes there:
+	$$
+	\nabla f(\mathbf{x}^*) \cdot \mathbf{x}'(0) = 0
+	$$
+	So $\nabla f$ is \textit{also} perpendicular to every allowed direction of travel.
+
+	This is the heart of the matter, and it is worth restating in words: if $\nabla f$ had \textit{any} component along the constraint, we could slide a little in that direction, stay allowed, and decrease $f$ --- so we would not be at the optimum.
+
+	\paragraph{Step 3: two vectors perpendicular to the same directions are parallel.}
+	With a single constraint, the allowed directions of travel form a space of dimension $n-1$ (the tangent to the constraint surface).
+	Both $\nabla f$ and $\nabla g$ are perpendicular to all of it, and the space of vectors perpendicular to a space of dimension $n-1$ has dimension $1$.
+	Hence $\nabla f$ and $\nabla g$ are parallel: there exists a number $\lambda$ such that
+	$$
+	\boxed{\ \nabla f(\mathbf{x}^*) = \lambda \, \nabla g(\mathbf{x}^*)\ }
+	$$
+	This --- together with the constraint $g(\mathbf{x}^*) = 0$ itself --- is the real content of the method.
+	The number $\lambda$ appears simply as the proportionality factor between two parallel vectors.
+
+	\paragraph{Step 4: the Lagrangian is just bookkeeping.}
+	We now have two conditions to satisfy simultaneously:
+	$$
+	\nabla f = \lambda \nabla g
+	\qquad \text{and} \qquad
+	g(\mathbf{x}) = 0
+	$$
+	Look at what the Lagrangian does with them.
+	Differentiating $\mathcal{L} = f - \lambda g$ with respect to the $\mathbf{x}$ variables gives
+	$$
+	\nabla_\mathbf{x} \mathcal{L} = \nabla f - \lambda \nabla g = \mathbf{0}
+	\qquad \Longleftrightarrow \qquad
+	\nabla f = \lambda \nabla g
+	$$
+	which is the first condition; and differentiating with respect to $\lambda$ gives
+	$$
+	\frac{\partial \mathcal{L}}{\partial \lambda} = -g(\mathbf{x}) = 0
+	\qquad \Longleftrightarrow \qquad
+	g(\mathbf{x}) = 0
+	$$
+	which is the second one --- the constraint comes back by itself.
+
+	So the Lagrangian is not magic: it is a device that packs the geometric condition \textit{and} the constraint into a single equation $\nabla \mathcal{L} = \mathbf{0}$, which we can then hand to the usual unconstrained machinery.
+	Treating $\lambda$ as one more variable is exactly what makes the constraint reappear.
+
+	\paragraph{The same picture with level curves.}
+	Imagine walking along the constraint curve while watching the level curves of $f$.
+	As long as you are crossing level curves, $f$ is changing, so you can keep going down.
+	You stop descending exactly when the constraint curve stops crossing the level curves and \textit{touches} one instead --- that is, when the two curves are \textbf{tangent}.
+	Two curves are tangent exactly when their normals are parallel, i.e. when $\nabla f = \lambda \nabla g$.
+
+	\noindent \textbf{Example:}
+	For $f(x,y) = x^2+y^2$ with the constraint $g(x,y) = x + y - 1 = 0$:
+	$$
+	\nabla f = \begin{pmatrix} 2x \\ 2y \end{pmatrix}
+	\qquad \text{and} \qquad
+	\nabla g = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
+	$$
+	These are parallel exactly when $2x = 2y$, i.e. $x = y$; combined with the constraint, this gives $x = y = \frac{1}{2}$ straight away.
+	The level curves of $f$ are circles centred on the origin, and the answer is the point where the line $x+y=1$ is tangent to one of them --- the closest point of the line to the origin, as expected.
+
+	\paragraph{Three warnings.}
+	\begin{itemize}
+		\item \textbf{Do not try to minimize $\mathcal{L}$.}
+		The solution is a \textit{stationary} point of $\mathcal{L}$, not a minimum of it: $\mathcal{L}$ typically has a saddle point there (it is minimal in $\mathbf{x}$, but maximal in $\lambda$).
+		Only $\nabla \mathcal{L} = \mathbf{0}$ matters.
+		\item \textbf{Stationary does not mean minimal.}
+		Exactly as in the unconstrained case, $\nabla \mathcal{L} = \mathbf{0}$ finds minima, maxima and saddle points alike.
+		When several points come out, compare the values of $f$ to decide which is which.
+		\item \textbf{The argument needs $\nabla g \neq \mathbf{0}$.}
+		If $\nabla g$ vanishes at the solution, Step 3 collapses (the "direction perpendicular to the constraint" is not well defined) and the method can miss the answer.
+		This is rare in practice, but it is the reason the theorem always comes with such an assumption.
+	\end{itemize}
+
+	\paragraph{With several constraints.}
+	The same reasoning applies: the allowed directions are those perpendicular to \textit{all} the $\nabla g_i$ at once, and $\nabla f$ must again be perpendicular to all of them.
+	This forces $\nabla f$ to be a linear combination of the $\nabla g_i$:
+	$$
+	\nabla f = \sum_{i=1}^m \lambda_i \nabla g_i
+	$$
+	which is precisely $\nabla_\mathbf{x} \mathcal{L} = \mathbf{0}$ for the Lagrangian written above --- with one multiplier per constraint.
+
+	\textbf{Example:}
+	Minimize $f(x, y) = x^2 + y^2$ subject to $x + y = 1$.
+
+	\textbf{Step 1: Construct the Lagrange Function}\\
+	The Lagrangian is:
+	$$
+	\mathcal{L}(x, y, \lambda) = x^2 + y^2 - \lambda (x + y - 1)
+	$$
+
+	\textbf{Step 2: Compute the Partial Derivatives}\\
+	The partial derivatives of the Lagrangian are:
+	$$
+	\frac{\partial \mathcal{L}}{\partial x} = 2x - \lambda = 0, \quad \frac{\partial \mathcal{L}}{\partial y} = 2y - \lambda = 0, \quad \frac{\partial \mathcal{L}}{\partial \lambda} = -(x + y - 1) = 0
+	$$
+	Note how the last one simply hands the constraint back to us.
+
+	\textbf{Step 3: Solve the System of Equations}\\
+	The first two equations give $x = y = \frac{\lambda}{2}$; substituting into the third (i.e. into the constraint) gives $\lambda = 1$, hence $x = y = \frac{1}{2}$, which matches our previous result.
+	
+	\textbf{Step 4: Determine the Optimal Point}\\
+	Substitute $x = \frac{1}{2}$, $y = \frac{1}{2}$ into the original function:
+	$$
+	f\left(\frac{1}{2}, \frac{1}{2}\right) = \left(\frac{1}{2}\right)^2 + \left(\frac{1}{2}\right)^2 = \frac{1}{4} + \frac{1}{4} = \frac{1}{2}
+	$$
+	Thus, the minimum value of $f(x, y) = x^2 + y^2$ subject to $x + y = 1$ is $\frac{1}{2}$ at the point $\left(\frac{1}{2}, \frac{1}{2}\right)$.
+	
+	\subsection{Inequality Constrained Optimization}
+	Inequality constrained optimization problems can be expressed as:
+	$$
+	\text{Minimize } f(\mathbf{x})
+	\quad
+	\text{subject to}
+	\quad
+	g_i(\mathbf{x}) \geq 0
+	\quad
+	\text{for } i = 1, \dots, m
+	$$
+	
+	\subsubsection{Direct Method}
+	When the constraint is active (i.e., it holds as an equality), it can be treated similarly to the equality-constrained case.
+	If inactive, it is ignored.
+	
+	\textbf{Example:}
+	Minimizing a Quadratic Function with an Inequality Constraint
+	\\
+	Minimize $f(x, y) = x^2 + y^2$ subject to $x \geq 0$ and $y \geq 0$.
+	\\
+	This can be approached by checking the boundary and interior points.
+	The minimum will be at $(0,0)$ given the non-negative constraints.
+	\\
+	Note that if the constraint was $x+y \geq 1$, showing that the minimum is at $(0.5, 0.5)$ is much harder via direct calculations.
+	
+	\subsubsection{Lagrange Multiplier Method with Slack Variables}
+	We note that:
+	$$
+	g_i(\mathbf{x}) \geq 0
+	\iff
+	g_i(\mathbf{x}) -s^2 = 0
+	\quad
+	\text{ for some } s \in \R
+	$$
+	Here, $s$ is called a "slack variable".
+	It is then possible to use the Lagrange trick as before.
+	\\
+	The Lagrange multiplier method introduces now multiple auxiliary variables: the Lagrange multiplier and some slack variables to incorporate the inequality constraints into the objective function.
+	
+	\textbf{Lagrange Function:}
+	$$
+	\mathcal{L}(\mathbf{x}, \mathbf{s}, \lambda)
+	= f(\mathbf{x}) - \sum_{i=1}^m \lambda_i \left( g_i(\mathbf{x}) - s_i^2 \right)
+	$$
+	To find the stationary points, we solve the system
+	$$
+	\nabla \mathcal{L}(\mathbf{x}, \mathbf{s}, \lambda) = \mathbf{0}
+	\qquad \text{together with} \qquad
+	\lambda_i \geq 0
+	$$
+	where, again, the gradient is taken with respect to every variable: the $\mathbf{x}$, the slack variables $s_i$, and the multipliers $\lambda_i$.
+
+	\subsubsection{Why Does It Work?}
+
+	Everything of the equality case still applies --- after all, we have turned the inequalities into equalities.
+	Two new things happen, and both are worth understanding.
+
+	\paragraph{The derivative in $s$ produces a case distinction.}
+	Differentiating $\mathcal{L}$ with respect to a slack variable $s_i$ gives
+	$$
+	\frac{\partial \mathcal{L}}{\partial s_i} = 2 \lambda_i s_i = 0
+	$$
+	A product is zero when one of its factors is, so \textit{for each constraint}:
+	$$
+	\lambda_i = 0
+	\qquad \text{or} \qquad
+	s_i = 0
+	$$
+	These two cases are exactly the two things that can happen to an inequality constraint:
+	\begin{itemize}
+		\item $s_i = 0$ means $g_i(\mathbf{x}) = s_i^2 = 0$: the constraint holds \textit{as an equality}, we are on its boundary.
+		The constraint is \textbf{active}, and we are back to the equality case.
+		\item $\lambda_i = 0$ means the constraint term disappears from $\mathcal{L}$ altogether: the optimum is the same as if the constraint had never been written.
+		The constraint is \textbf{inactive}.
+	\end{itemize}
+	This is why solving these problems always splits into cases, and it is the whole reason for introducing $s$: the slack variable is what \textit{detects} whether a constraint is doing any work.
+	The property
+	$$
+	\lambda_i \, g_i(\mathbf{x}) = 0 \qquad \text{for every } i
+	$$
+	(one of the two factors is always zero) is known as \textbf{complementary slackness}.
+
+	\paragraph{The multiplier must have the right sign.}
+	This is the one genuinely new condition, and the reason it exists is that an inequality, unlike an equality, has a \textit{direction}.
+
+	Suppose the constraint $g(\mathbf{x}) \geq 0$ is active at the solution, so we sit on the boundary $g = 0$, and recall from the equality case that $\nabla f = \lambda \nabla g$ there.
+	Now, $\nabla g$ points towards increasing $g$, that is, \textit{towards the inside} of the allowed region.
+	We are at a genuine minimum only if $f$ increases as we step inside --- otherwise we would step in and do better.
+	The increase of $f$ in the direction $\nabla g$ is
+	$$
+	\nabla f \cdot \nabla g = \lambda \, \nabla g \cdot \nabla g = \lambda \, \|\nabla g\|^2
+	$$
+	and since $\|\nabla g\|^2 > 0$, this is positive exactly when
+	$$
+	\lambda \geq 0
+	$$
+	So the sign condition is not a technicality: it is what distinguishes "the constraint is holding the solution back" (genuine constrained minimum, $\lambda > 0$) from "the constraint is pushing the solution outwards" (not a minimum at all, $\lambda < 0$).
+	A negative multiplier is how the method tells us that we have found the wrong kind of point, and that the case should be discarded.
+
+	Note also that this is where our sign convention pays off: had we written $\mathcal{L} = f + \lambda(g - s^2)$, the very same reasoning would give $\lambda \leq 0$ instead.
+
+	\paragraph{Summary of the conditions.}
+	Putting everything together, at a solution there are numbers $\lambda_i$ such that
+	$$
+	\nabla f = \sum_{i=1}^m \lambda_i \nabla g_i,
+	\qquad
+	g_i(\mathbf{x}) \geq 0,
+	\qquad
+	\lambda_i \geq 0,
+	\qquad
+	\lambda_i \, g_i(\mathbf{x}) = 0
+	$$
+	These are the \textbf{Karush-Kuhn-Tucker (KKT) conditions}, and they are the foundation of most of constrained optimization --- including the Support Vector Machines of the Binary Classification session.
+
+	\textbf{Example:}
+	Minimizing a Quadratic Function with an Inequality Constraint\\
+	Consider the problem of minimizing the function $f(x, y) = x^2 + y^2$ subject to the inequality constraint $x + y \geq 1$.
+	
+	\textbf{Step 1: Introduce the Slack Variable}\\
+	The constraint can be written as:
+	$$
+	x + y - s^2 = 1 \quad \text{as } s^2 \geq 0 \quad \forall s \in \mathbb{R}
+	$$
+	where $s$ is the slack variable.
+	The constraint is now an equality constraint.
+	
+	\textbf{Step 2: Construct the Lagrange Function}\\
+	The Lagrange function incorporating the constraint is:
+	$$
+	\mathcal{L}(x, y, s, \lambda) = x^2 + y^2 - \lambda \left( (x + y) - s^2 - 1 \right)
+	$$
+	where $\lambda$ is the Lagrange multiplier.
+	
+	\textbf{Step 3: Compute the Partial Derivatives}\\
+	To find the stationary points, take the partial derivatives of $\mathcal{L}$ with respect to $x$, $y$, $s$, and $\lambda$, and set them to zero:
+	$$
+	\frac{\partial \mathcal{L}}{\partial x} = 2x - \lambda = 0
+	$$
+	$$
+	\frac{\partial \mathcal{L}}{\partial y} = 2y - \lambda = 0
+	$$
+	$$
+	\frac{\partial \mathcal{L}}{\partial s} = 2\lambda s = 0
+	$$
+	$$
+	\frac{\partial \mathcal{L}}{\partial \lambda} = -\left( x + y - s^2 - 1 \right) = 0
+	$$
+	
+	\textbf{Step 4: Solve the System of Equations}\\
+	From $\frac{\partial \mathcal{L}}{\partial x} = 0$ and $\frac{\partial \mathcal{L}}{\partial y} = 0$, we have:
+	$$
+	2x - \lambda = 0 \quad \text{and} \quad 2y - \lambda = 0
+	$$
+	This implies $x = y$.\\
+	From $\frac{\partial \mathcal{L}}{\partial s} = 0$, we have:
+	$$
+	2\lambda s = 0
+	$$
+	This implies $\lambda = 0$ or $s = 0$. 
+	
+	\begin{enumerate}
+		\item If $\lambda = 0$, then $x = 0$ and $y = 0$, but this would violate the constraint $x + y \geq 1$.
+		Hence, this case is not valid.
+		\item If $s = 0$, the constraint simplifies to $x + y = 1$.
+		Since $x = y$, we have $2x = 1$, so $x = \frac{1}{2}$ and $y = \frac{1}{2}$.
+		The multiplier is then $\lambda = 2x = 1 \geq 0$, as required: the constraint is active, and it is genuinely holding the solution back.
+	\end{enumerate}
+	
+	\textbf{Step 5: Determine the Optimal Point}\\
+	Substitute $x = \frac{1}{2}$, $y = \frac{1}{2}$ into the original function:
+	$f\left(\frac{1}{2}, \frac{1}{2}\right) = \frac{1}{2}$.
+	Thus, the minimum value of $f(x, y) = x^2 + y^2$ subject to $x + y \geq 1$ is $\frac{1}{2}$ at the point $\left(\frac{1}{2}, \frac{1}{2}\right)$.
+	
+\end{document}
