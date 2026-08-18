@@ -1,0 +1,197 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{stmaryrd}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\txtand}{\text{ and }}
+\newcommand{\txtor}{\text{ or }}
+\newcommand{\lxor}{\veebar}
+
+%opening
+\title{Notes on Optimization}
+\author{DSBA Mathematics Refresher 2025}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		
+	\end{abstract}
+	
+	\section*{Introduction to Optimization}
+	Optimization involves finding the best solution from a set of possible solutions.
+	Specifically, it entails finding the value of $x$ that minimizes or maximizes a function $f(x)$.
+	
+	\subsection*{Maximization and Minimization}
+	Maximization of $f(x)$ can be transformed into a minimization problem by considering $-f(x)$.
+	$$\text{maximize } f(x) \equiv \text{minimize } -f(x)$$
+	
+	\subsection*{Continuous vs. Discrete Optimization}
+	In this session, we will focus on continuous optimization, as it is predominantly used in data science.
+	For your mathematical culture, it's good to know that both exist.
+	Optimization algorithms on continuous cases are quite different to the ones used in discrete cases.
+	
+	\textbf{Continuous Optimization:}
+	The variables can take any value within a given range, typically $\R$.
+	\textit{Example:} Linear regression, where parameters can take any real value.
+	
+	\textbf{Discrete Optimization:}
+	The variables can only take on discrete values, typically $\Z$ or $\N$.
+	\textit{Example:} Integer programming, where solutions are restricted to integers.
+	
+	\section*{Optimization Algorithms}
+	What algorithms can you think of for solving optimization problems?\\
+	\textbf{\textit{[Interactive session]}}\\
+	Here, are methods presented in class:
+	
+	\subsection*{Grid Search}
+	Grid Search is a brute-force method that evaluates the function at a grid of points covering the domain.
+	It is simple but computationally expensive, especially in high dimensions.
+	If your domain is unbounded (such as $\R$), you will need to bound your grid search.
+	
+	\subsection*{Dichotomy (Bisection Method)}
+	The Bisection Method is fitted for one-dimensional optimization (although it is possible to extend it to multi-dimension).
+	It repeatedly bisects an interval and selects the sub-interval in which the function changes sign.
+	It is effective for finding roots but can be extended to optimization.
+	
+	\subsection*{Gradient Descent}
+	Gradient Descent is an iterative method used for finding local minima of a function.
+	It updates the parameters in the opposite direction of the gradient of the function at the current point. 
+	
+	The update rule is:
+	$x_{k+1} = x_k - \alpha \nabla f(x_k),$
+	where $\alpha$ is the learning rate and $\nabla f(x_k)$ is the gradient of $f$ at $x_k$.
+	
+	In one dimension, $\nabla f(x_k)$ is simply the derivative of $f$.
+	
+	\section*{Algorithms in Practice}
+	\subsection*{Grid Search}
+	\begin{itemize}
+		\item \textbf{Step 1:} Define the grid over the domain.
+		\item \textbf{Step 2:} Evaluate the function at each grid point.
+		\item \textbf{Step 3:} Select the point with the best function value.
+	\end{itemize}
+	\textbf{Advantages:} Simple and straightforward.
+	\\
+	\textbf{Disadvantages:} Computationally expensive, especially in high dimensions.
+	It also needs a bounded domain.
+	
+	\subsection*{Bisection Method}
+	\begin{itemize}
+		\item \textbf{Step 1:} Choose initial interval $[a, b]$ to explore.
+		\item \textbf{Step 2:} Compute the midpoint $c = \frac{a+b}{2}$.
+		\item \textbf{Step 3:} Determine the "best"\footnote{"best" means the one most likely to contain the minimum.} sub-interval $[a, c]$ or $[c, b]$.
+		\item \textbf{Step 4:} Repeat until the interval is sufficiently small.
+	\end{itemize}
+	\textbf{Advantages:} Fun to implement.
+	\\
+	\textbf{Disadvantages:} Extending the technique to multi dimensional problem is complicated.
+	It also needs a bounded domain.
+	
+	\subsection*{Gradient Descent}
+	\begin{itemize}
+		\item \textbf{Step 1:} Initialize $x_0$.
+		\item \textbf{Step 2:} Compute the gradient $\nabla f(x_k)$.
+		\item \textbf{Step 3:} Update $x_{k+1} = x_k - \alpha \nabla f(x_k)$.
+		\item \textbf{Step 4:} Repeat until convergence (i.e., $\|\nabla f(x_k)\|$ is small).
+	\end{itemize}
+	\textbf{Advantages:} Efficient for high-dimensional problems, widely used in machine learning.
+	\\
+	\textbf{Disadvantages:} May converge to local minima, requires tuning of the learning rate.
+	
+	\section*{Conclusion}
+	Continuous optimization is a crucial tool in data science.
+	It's a good exercise to test various optimization techniques, and you are encourage to try other ones on you own (genetic algorithms are interesting as well, although only used in niche cases).
+	In practice, gradient descent (and variations of it, such as Adam) are used in the vast majority of the cases.
+	
+	\section*{Linear Regression}
+	This section will look at $1$D-$1$D linear regression so that formulas maintain a manageable weight.
+	The same principle can be applied to $N$D-$1$D linear regressions, and repeating the process for each output dimension, it is possible to extend it to $N$D-$M$D cases.
+	
+	Given a set of data points $(x_k, y_k) \in \mathbb{R}^2$ for $1 \leq k \leq N$, we want to find the line $y = ax + b$ that best fits the data.
+	The function $y = f(x)$ is a linear model with parameters $a$ and $b$, where $a$ represents the slope and $b$ represents the intercept.
+	
+	\subsection*{Least Squares Method}
+	To define the "best fit" for a line, we use the sum of errors squared.
+	The idea is to minimize the sum of the squared differences between the observed values $y_k$ and the predicted values $f(x_k)$.
+	This sum will be our cost function (or loss):
+	$$
+	\mathcal{L}(a, b) = \sum_{k=1}^{N} \left( y_k - (ax_k + b) \right)^2
+	$$
+	Our objective is to minimize $\mathcal{L}(a, b)$ with respect to $a$ and $b$.
+	
+	\subsection*{Derivation of $a$ and $b$}
+	To minimize $\mathcal{L}(a, b)$, we calculate the partial derivatives of $\mathcal{L}$ with respect to $a$ and $b$.
+	
+	First, the partial derivative of $\mathcal{L}$ with respect to $a$ is:
+	$$
+	\frac{\partial \mathcal{L}(a, b)}{\partial a} = \frac{\partial}{\partial a} \sum_{k=1}^{N} \left( y_k - (ax_k + b) \right)^2
+	$$
+	$$
+	= \sum_{k=1}^{N} \frac{\partial}{\partial a} \left( y_k - ax_k - b \right)^2
+	$$
+	$$
+	= \sum_{k=1}^{N} 2 \left( y_k - ax_k - b \right) (-x_k)
+	$$
+	$$
+	= -2 \sum_{k=1}^{N} x_k \left( y_k - ax_k - b \right)
+	$$
+	
+	$\mathcal{L}(a, b)$ is minimum if $\frac{\partial \mathcal{L}(a, b)}{\partial a} = 0$, so we want:
+	$$
+	\sum_{k=1}^{N} x_k y_k - a \sum_{k=1}^{N} x_k^2 - b \sum_{k=1}^{N} x_k = 0
+	$$
+	
+	Next, the partial derivative of $\mathcal{L}(a, b)$ with respect to $b$ is:
+	$$
+	\frac{\partial \mathcal{L}(a, b)}{\partial b} = \frac{\partial}{\partial b} \sum_{k=1}^{N} \left( y_k - (ax_k + b) \right)^2
+	$$
+	$$
+	= \sum_{k=1}^{N} \frac{\partial}{\partial b} \left( y_k - ax_k - b \right)^2
+	$$
+	$$
+	= \sum_{k=1}^{N} 2 \left( y_k - ax_k - b \right) (-1)
+	$$
+	$$
+	= -2 \sum_{k=1}^{N} \left( y_k - ax_k - b \right)
+	$$
+	
+	Setting $\frac{\partial \mathcal{L}(a, b)}{\partial b} = 0$:
+	$$
+	\sum_{k=1}^{N} y_k - a \sum_{k=1}^{N} x_k - N b = 0
+	$$
+	
+	\subsection*{Solving the System of Equations}
+	We now have a system of two linear equations to solve for $a$ and $b$:
+	$$
+	\sum_{k=1}^{N} x_k y_k = a \sum_{k=1}^{N} x_k^2 + b \sum_{k=1}^{N} x_k
+	$$
+	$$
+	\sum_{k=1}^{N} y_k = a \sum_{k=1}^{N} x_k + N b
+	$$
+	
+	\vspace{1cm}
+	\textit{[Details left to the reader]}
+	\vspace{1cm}
+	
+	Setting $\bar{x} = \frac{1}{N} \sum_{k=1}^{N} x_k$ and $\bar{y} = \frac{1}{N} \sum_{k=1}^{N} y_k$ (i.e. the means of the $x$ and $y$ values, respectively):	
+	$$
+	a = \frac{\left( \sum_{k=1}^{N} x_ky_k \right) - N\bar{x}\bar{y}}{\sum_{k=1}^{N} x_k(x_k - \bar{x})}
+	$$
+	$$
+	b = \bar{y} - a \bar{x}
+	$$
+	
+\end{document}
