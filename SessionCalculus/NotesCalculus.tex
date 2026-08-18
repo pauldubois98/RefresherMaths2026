@@ -1,0 +1,153 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{stmaryrd}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\txtand}{\text{ and }}
+\newcommand{\txtor}{\text{ or }}
+\newcommand{\lxor}{\veebar}
+
+%opening
+\title{Notes on Calculus}
+\author{DSBA Mathematics Refresher 2025}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		
+	\end{abstract}
+	
+	
+	\section{Derivatives: A Quick Reminder}
+	The derivative of a function measures how the function's output value changes as the input value changes.
+	For a function $f(x)$, the derivative, denoted by $f'(x)$ or $\frac{d}{dx}f(x)$, is defined as:
+	$$
+	f'(x) = \lim_{\Delta x \to 0} \frac{f(x+\Delta x) - f(x)}{\Delta x}
+	$$
+	Some common derivatives include:
+	\begin{align*}
+		\text{Power Rule:} & \quad \frac{d}{dx} \left( x^n \right) = nx^{n-1}, \\
+		\text{Exponential Function:} & \quad \frac{d}{dx} \left( e^x \right) = e^x, \\
+		\text{Trigonometric Functions:} & \quad \frac{d}{dx} \left( \sin x \right) = \cos x, \quad \frac{d}{dx} \left( \cos x \right) = -\sin x.
+	\end{align*}
+	
+	\paragraph{Chain Rule}
+	The chain rule is used to differentiate composite functions.
+	 If you have a function $y = f(g(x))$, where one function is inside another, the chain rule states:
+	$$
+	\frac{dy}{dx} = f'(g(x)) \cdot g'(x)
+	$$
+	
+	\noindent \textbf{Example:}
+	If $y = \sin(3x)$, then:
+	$$
+	\frac{dy}{dx} = \cos(3x) \cdot 3 = 3\cos(3x)
+	$$
+	
+	\paragraph{Product Rule}
+	The product rule is used to differentiate the product of two functions.
+	If you have a function $y = u(x) \cdot v(x)$, where $u(x)$ and $v(x)$ are both functions of $x$, the product rule states:
+	$$
+	\frac{dy}{dx} = u'(x) \cdot v(x) + u(x) \cdot v'(x)
+	$$
+	
+	\noindent \textbf{Example:}
+	If $y = x^2 \cdot \sin(x)$, then:
+	$$
+	\frac{dy}{dx} = 2x \cdot \sin(x) + x^2 \cdot \cos(x)
+	$$
+	
+	\paragraph{Quotient Rule}
+	The quotient rule is used to differentiate the quotient of two functions.
+	If you have a function $y = \frac{u(x)}{v(x)}$, where $u(x)$ and $v(x)$ are both functions of $x$, the quotient rule states:
+	$$
+	\frac{dy}{dx} = \frac{u'(x) \cdot v(x) - u(x) \cdot v'(x)}{[v(x)]^2}
+	$$
+	
+	\noindent \textbf{Example:}
+	If $y = \frac{x^2}{\sin(x)}$, then:
+	$$
+	\frac{dy}{dx} = \frac{2x \cdot \sin(x) - x^2 \cdot \cos(x)}{[\sin(x)]^2}
+	$$
+	
+	\section{Integration: A Quick Reminder}
+	Integration is the "reverse process" of differentiation.
+	The integral of a function represents the area under the curve of the function.
+	The indefinite integral of a function $f(x)$ is denoted by:
+	$$
+	\int f(x) dx
+	$$
+	Some basic integration rules include:
+	\begin{align*}
+		\text{Power Rule:} & \quad \int x^n dx = \frac{x^{n+1}}{n+1} + C, \quad (n \neq -1) \\
+		\text{Exponential Function:} & \quad \int e^x dx = e^x + C, \\
+		\text{Trigonometric Functions:} & \quad \int \sin x dx = -\cos x + C, \quad \int \cos x dx = \sin x + C.
+	\end{align*}
+	where $C$ is the constant of integration
+	\footnote{It is very common to forget the "$+C$".}
+	\footnote{When I tutor young students, I give them push-ups when they forget it... they don't usually forget more than twice.}.
+		
+	\section{Integration by Parts}
+	Integration by parts is based on the product rule for differentiation and is given by:
+	$$
+	\int u v' = uv - \int u' v
+	$$
+	where $u = f(x)$ and $dv = g(x) dx$. Steps:
+	\begin{enumerate}
+		\item Choose $u$ and $dv$.
+		\item Differentiate $u$ to get $du$.
+		\item Integrate $dv$ to get $v$.
+		\item Substitute into the formula.
+	\end{enumerate}
+	
+	\noindent \textbf{Example:}
+	$$
+	\int x e^x dx
+	$$
+	Let $u = x$, $dv = e^x dx$, then $du = 1 \cdot dx$ and $v = e^x$. Therefore:
+	$$
+	\int x e^x dx = x e^x - \int e^x dx = x e^x - e^x + C = e^x(x-1) + C
+	$$
+	
+	\section{Integration by Substitution}
+	Integration by substitution is used when the integral can be transformed into a simpler form by substituting $u = g(x)$. The substitution formula is:
+	$$
+	\int f(g(x)) \frac{d g(x)}{dx} dx = \int f(u)\,du
+	$$
+	or
+	$$
+	\int f(u) \frac{du}{dx} dx = \int f(u)\,du
+	$$
+	Steps:
+	\begin{enumerate}
+		\item Choose $u = g(x)$.
+		\item Compute $du = g'(x) dx$.
+		\item Rewrite the integral in terms of $u$.
+		\item Integrate with respect to $u$.
+		\item Substitute back $u = g(x)$ if needed.
+	\end{enumerate}
+	\textbf{Example:}
+	$$
+	\int \cos(3x) dx
+	$$
+	Let $u = 3x$, then $du = 3 dx$ or $dx = \frac{du}{3}$.
+	The integral becomes:
+	$$
+	\int \cos(3x) dx = \frac{1}{3} \int \cos(u)\,du = \frac{1}{3}\sin(u) + C = \frac{1}{3}\sin(3x) + C
+	$$
+	
+	
+\end{document}
