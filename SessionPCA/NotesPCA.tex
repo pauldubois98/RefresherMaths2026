@@ -1,0 +1,351 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{stmaryrd}
+\usepackage{hyperref}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\txtand}{\text{ and }}
+\newcommand{\txtor}{\text{ or }}
+\newcommand{\lxor}{\veebar}
+
+%opening
+\title{Notes on Principal Components Analysis}
+\author{DSBA Mathematics Refresher 2025}
+\date{}
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		
+	\end{abstract}
+	
+	\section{Sample vs. Population}
+	In statistics, it is crucial to distinguish between a \textbf{sample} and a \textbf{population}:
+	\begin{itemize}
+		\item \textbf{Population:}
+		The entire set of individuals or observations that we are interested in studying. For example, all people in a country.
+		\item \textbf{Sample:}
+		A subset of the population that is used to represent the entire population. For instance, 1,000 people surveyed from the population.
+	\end{itemize}
+	
+	We often cannot measure the entire population due to time, cost, or logistical constraints.
+	We rely on samples to make inferences about the population.
+	
+	\section{Mean, Standard Deviation, and Estimators}
+	\subsection{Population Mean and Standard Deviation}
+	Given a population with $N$ elements, the \textbf{population mean} $\mu$ and the \textbf{population standard deviation} $\sigma$ are defined as:
+	$$
+	\mu = \frac{1}{N} \sum_{i=1}^N x_i
+	$$
+	$$
+	\sigma = \sqrt{\frac{1}{N} \sum_{i=1}^N (x_i - \mu)^2}
+	$$
+	
+	\subsection{Sample Mean and Standard Deviation}
+	For a sample of size $n$, the \textbf{sample mean} $\bar{x}$ and the \textbf{sample standard deviation} $s$ are calculated as:
+	$$
+	\bar{x} = \frac{1}{n} \sum_{i=1}^n x_i
+	$$
+	$$
+	s = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2}
+	$$
+	
+	\subsection{Why is the Variance Estimator Biased?}
+	The sample variance estimator is given by:
+	$$
+	s^2 = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2
+	$$
+	This estimator is biased because it tends to underestimate the true population variance $\sigma^2$.
+	The bias arises because $\bar{x}$ is itself a random variable that depends on the sample, and it pulls the variance down slightly.
+	This correction by dividing by $(n-1)$ instead of $n$ is known as Bessel's correction \footnote{See \url{https://gregorygundersen.com/blog/2019/01/11/bessel/} for more in depth explanation.}.
+	
+	\subsection{When to Use $\frac{1}{n}$ vs. $\frac{1}{n-1}$}
+	\paragraph{Population Data}
+	When you have data for the entire population, use:
+	$$
+	\sigma^2 = \frac{1}{N} \sum_{i=1}^N (x_i - \mu)^2
+	$$
+	Here, you divide by $N$, the total number of observations in the population.
+	
+	\paragraph{Sample Data}
+	When you have data for a sample and wish to estimate the population variance, use:
+	$$
+	s^2 = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2
+	$$
+	This adjustment accounts for the extra variability introduced by using the sample mean $\bar{x}$ instead of the population mean $\mu$.
+	
+	\section{Change of Basis}
+	In linear algebra, a \textbf{change of basis} refers to expressing a vector in a different coordinate system.
+	Suppose $\mathbf{v}$ is a vector in a vector space with basis $\mathbf{B} = \{\mathbf{b}_1, \mathbf{b}_2, \dots, \mathbf{b}_n\}$.
+	If we have a new basis $\mathbf{B}' = \{\mathbf{b}_1', \mathbf{b}_2', \dots, \mathbf{b}_n'\}$, we can represent $\mathbf{v}$ in the new basis by finding the coordinates relative to $\mathbf{B}'$.
+	
+	If $\mathbf{v} = a_1 \mathbf{b}_1 + a_2 \mathbf{b}_2 + \dots + a_n \mathbf{b}_n$, then under the new basis $\mathbf{B}'$, the same vector can be written as:
+	$$
+	\mathbf{v} = a_1' \mathbf{b}_1' + a_2' \mathbf{b}_2' + \dots + a_n' \mathbf{b}_n'
+	$$
+	The coordinates $\mathbf{a'} = (a_1', a_2', \dots, a_n')$ are related to the original coordinates $\mathbf{a} = (a_1, a_2, \dots, a_n)$ by a transformation matrix $\mathbf{P}$:
+	$$
+	\mathbf{a} = \mathbf{P} \mathbf{a'}
+	\qquad \textit{or} \qquad
+	\mathbf{a'} = \mathbf{P}^{-1} \mathbf{a}
+	$$
+	where $P = \begin{pmatrix} \mathbf{b}_1' \mathbf{b}_2' \dots \mathbf{b}_n' \end{pmatrix}$ with $\mathbf{b}_1', \mathbf{b}_2', \dots, \mathbf{b}_n'$ column vectors expressed in the basis $\mathbf{B}$.
+	
+	\paragraph{Example: Change of Basis}
+	\noindent\\
+	Consider a vector $\mathbf{v} = \begin{pmatrix} 3 \\ 2 \end{pmatrix}$ in the standard basis $\mathbf{B} = \left\{ \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 0 \\ 1 \end{pmatrix} \right\}$.
+	\\
+	Suppose we want to express $\mathbf{v}$ in a new basis $\mathbf{B}' = \left\{ \mathbf{b}_1' = \begin{pmatrix} 1 \\ 1 \end{pmatrix}, \mathbf{b}_2' = \begin{pmatrix} 1 \\ -1 \end{pmatrix} \right\}$.
+	
+	\subparagraph{Approach 1: Solving the linear system}
+	\noindent\\
+	Finding the coordinates of $\mathbf{v}$ in the new basis $\mathbf{B}'$, means expressing $\mathbf{v}$ as a linear combination of $\mathbf{b}_1'$ and $\mathbf{b}_2'$:
+	$$
+	\mathbf{v} = c_1 \mathbf{b}_1' + c_2 \mathbf{b}_2' = c_1 \begin{pmatrix} 1 \\ 1 \end{pmatrix} + c_2 \begin{pmatrix} 1 \\ -1 \end{pmatrix}
+	$$
+	This gives us the system of equations:
+	$$
+	\begin{aligned}
+		c_1 + c_2 &= 3 \\
+		c_1 - c_2 &= 2
+	\end{aligned}
+	$$
+	Solving for $c_1$ and $c_2$:
+	$$
+	c_1 = \frac{3 + 2}{2} = \frac{5}{2}, \quad c_2 = \frac{3 - 2}{2} = \frac{1}{2}
+	$$
+	So, the coordinates of $\mathbf{v}$ in the new basis $\mathbf{B}'$ are:
+	$$
+	\mathbf{v}_{\mathbf{B}'} = \begin{pmatrix} \frac{5}{2} \\ \frac{1}{2} \end{pmatrix}
+	$$
+	
+	\subparagraph{Approach 2: Using the transformation matrix}
+	\noindent\\
+	The transformation matrix $\mathbf{P}$ from the standard basis $\mathbf{B}$ to the new basis $\mathbf{B}'$ is given by:
+	$$
+	\mathbf{P} = \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}
+	$$
+	and the inverse of $\mathbf{P}$ is:
+	$$
+	\mathbf{P}^{-1} = \frac{1}{2} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}
+	$$
+	Thus, the coordinates in the new basis can also be computed as:
+	$$
+	\mathbf{v}_{\mathbf{B}'} = \mathbf{P}^{-1} \mathbf{v} = \frac{1}{2} \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} \begin{pmatrix} 3 \\ 2 \end{pmatrix} = \begin{pmatrix} \frac{5}{2} \\ \frac{1}{2} \end{pmatrix}
+	$$
+	
+	\section{Principal Component Analysis (PCA) Theory}
+	\textbf{Principal Component Analysis (PCA)} is a technique used to reduce the dimensionality of data while preserving as much variance as possible.
+	It does so by finding a new basis in which the first few dimensions capture the most variance in the data.
+	All but the first few components can be discarded without loosing too much information, while making the data (much) easier to process.
+	
+	\paragraph{Steps to perform PCA}
+	\begin{enumerate}
+		\item \textbf{Standardize the Data:}
+		Subtract the mean and divide by the standard deviation for each feature.
+		\item \textbf{Compute the Covariance Matrix:}
+		For a dataset with $n$ features, compute the $n \times n$ covariance matrix.
+		\item \textbf{Eigenvalue Decomposition:}
+		Perform an eigenvalue decomposition of the covariance matrix to find the eigenvalues and eigenvectors.
+		\item \textbf{Select Principal Components:}
+		The eigenvectors corresponding to the largest eigenvalues are chosen as the principal components.
+		\item \textbf{Transform the Data:}
+		Project the original data onto the principal components to obtain the transformed data in the new basis.
+	\end{enumerate}
+	
+	\paragraph{Mathematical Formulation}
+	Given a data matrix $\mathbf{X} \in \mathbb{R}^{m \times n}$ where $m$ is the number of samples and $n$ is the number of features, the covariance matrix $\mathbf{C}$ is:
+	$$
+	\mathbf{C} = \frac{1}{m-1} \mathbf{X}^\top \mathbf{X}
+	$$
+	The eigenvalue decomposition of $\mathbf{C}$ gives:
+	$$
+	\mathbf{C} = \mathbf{V} \mathbf{\Lambda} \mathbf{V}^\top
+	$$
+	where $\mathbf{V}$ is the matrix of eigenvectors and $\mathbf{\Lambda}$ is the diagonal matrix of eigenvalues.
+	The principal components are the columns of $\mathbf{V}$ corresponding to the largest eigenvalues.
+	
+	\paragraph{Example: PCA on a 2D Dataset}
+	\noindent\\
+	Suppose we have the following 2D dataset with 3 data points:
+	$$
+	\begin{pmatrix}
+		2 & 3 \\
+		3 & 4 \\
+		4 & 5 \\
+	\end{pmatrix}
+	$$
+	
+	\subparagraph{Center the Data}
+	Mean of the first feature (column):
+	$$
+	\mu_1 = \frac{2 + 3 + 4}{3} = 3
+	$$
+	Mean of the second feature:
+	$$
+	\mu_2 = \frac{3 + 4 + 5}{3} = 4
+	$$
+	Subtract the mean from each feature to center the data, you should obtain:
+	$$
+	\begin{pmatrix}
+		-1 & -1 \\
+		0 & 0 \\
+		1 & 1 \\
+	\end{pmatrix}
+	$$
+	\textit{(We won't do the scaling operation, in order to simplify the calculations.)}
+	
+	\subparagraph{Calculate the Covariance Matrix}
+	\noindent\\
+	The covariance matrix is calculated using the centered \textit{(and re-scaled)} data.
+	$$
+	\text{Cov} = \frac{1}{n-1} \text{(Centered Data)}^\text{T} \times \text{(Centered Data)}
+	$$
+	Here, $m=3$ is the number of data points.
+	
+	$$
+	\text{Cov} = \frac{1}{2} 
+	\begin{pmatrix}
+		-1 & 0 & 1 \\
+		-1 & 0 & 1 \\
+	\end{pmatrix}
+	\times
+	\begin{pmatrix}
+		-1 & -1 \\
+		0 & 0 \\
+		1 & 1 \\
+	\end{pmatrix}
+	=
+	\frac{1}{2}
+	\begin{pmatrix}
+		2 & 2 \\
+		2 & 2 \\
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+		1 & 1 \\
+		1 & 1 \\
+	\end{pmatrix}
+	$$
+	
+	\subparagraph{Calculate the Eigenvalues and Eigenvectors}
+	\noindent\\
+	To find the eigenvalues \( \lambda \), solve the characteristic equation:
+	$$
+	\text{det}(\text{Cov} - \lambda I) = 0
+	$$
+	$$
+	\text{det}\left(\begin{pmatrix}
+		1 - \lambda & 1 \\
+		1 & 1 - \lambda \\
+	\end{pmatrix}\right) = 0
+	$$
+	$$
+	(1 - \lambda)(1 - \lambda) - 1 = 0
+	$$
+	$$
+	\lambda^2 - 2\lambda = 0
+	$$
+	$$
+	\lambda(\lambda - 2) = 0
+	$$
+	So, the eigenvalues are $\lambda_1 = 0$ and $\lambda_2 = 2$.
+	
+	For \( \lambda_1 = 0 \), solve:
+	$$
+	\begin{pmatrix}
+		1 & 1 \\
+		1 & 1 \\
+	\end{pmatrix}
+	\begin{pmatrix}
+		x_1 \\
+		x_2 \\
+	\end{pmatrix}
+	= 0
+	$$
+	This gives the eigenvector \( v_1 = \begin{pmatrix} 1 \\ -1 \end{pmatrix} \).
+	
+	For \( \lambda_2 = 2 \), solve:
+	$$
+	\begin{pmatrix}
+		1 - 2 & 1 \\
+		1 & 1 - 2 \\
+	\end{pmatrix}
+	\begin{pmatrix}
+		x_1 \\
+		x_2 \\
+	\end{pmatrix}
+	= 0
+	$$
+	This gives the eigenvector \( v_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix} \).
+	
+	\subparagraph{Project the Data onto the Principal Components}
+	\noindent\\
+	The principal components are the eigenvectors corresponding to the largest eigenvalues.
+	Here, the largest eigenvalue is 2, so the principal component is \( v_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix} \).
+	To project the data onto this component, just multiply the centered data by \( v_2 \):
+	$$
+	\begin{pmatrix}
+		-1 & -1 \\
+		0 & 0 \\
+		1 & 1 \\
+	\end{pmatrix}
+	\times
+	\begin{pmatrix}
+		1 \\
+		1 \\
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+		-2 \\
+		0 \\
+		2 \\
+	\end{pmatrix}
+	$$
+	To project the data onto the 2nd component, just multiply the centered data by \( v_1 \):
+	$$
+	\begin{pmatrix}
+		-1 & -1 \\
+		0 & 0 \\
+		1 & 1 \\
+	\end{pmatrix}
+	\times
+	\begin{pmatrix}
+		1 \\
+		-1 \\
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+		0 \\
+		0 \\
+		0 \\
+	\end{pmatrix}
+	$$
+	
+	Hence, the data becomes:
+	$$
+	\begin{pmatrix}
+		-2 & 0 \\
+		0 & 0 \\
+		2 & 0 \\
+	\end{pmatrix}
+	$$
+	The first component explains $\frac{2}{2+0}*100 = 100$\% of the data, while the second component explains $\frac{0}{2+0}*100 = 0$\% of the data variability
+	\footnote{
+		Those values may change if you don't re-scale the data properly.
+		In this particular example, it does not matter (hence we ignored that step to simplify calculations).
+	}.
+	
+\end{document}
