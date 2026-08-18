@@ -1,0 +1,189 @@
+\documentclass[]{article}
+\usepackage[margin=2cm]{geometry}
+
+%opening
+\title{Exercises Set: Linear Algebra}
+\author{DSBA Mathematics Refresher 2025}
+\date{}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{stmaryrd}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\txtand}{\text{ and }}
+\newcommand{\txtor}{\text{ or }}
+\newcommand{\lxor}{\veebar}
+
+
+\begin{document}
+	
+	\maketitle
+	
+	\begin{abstract}
+		Only the questions with a * are compulsory (but do all of them!).
+	\end{abstract}
+	
+	\section{Systems of Linear Equations}
+	\paragraph{Reduced Row Echelon Form}
+	Find the Reduced Row Echelon Form of the following matrix:
+	$$\begin{pmatrix}
+		1 & 2 & 3 & 4\\
+		0 & 6 & 2 & 3\\
+		0 & 0 & 0 & 10
+	\end{pmatrix}$$
+	
+	\paragraph{Gaussian Elimination}
+	(*) Solve the following linear system using Gaussian Elimination:
+	\begin{align*}
+		2x + y &= 4 \\
+		3x + 2y + z &= 5 \\
+		y + 3z &= 7
+	\end{align*}
+	Start by writing the augmented matrix for the system and perform the necessary row operations to find the solution.
+	
+	
+	\section{Vector Spaces}
+	\paragraph{Linear Independence}
+	Consider the following vectors in $\mathbb{R}^3$:
+	$$
+	\mathbf{v_1} = \begin{bmatrix}
+		1 \\
+		2 \\
+		0
+	\end{bmatrix}, \quad
+	\mathbf{v_2} = \begin{bmatrix}
+		0 \\
+		1 \\
+		0
+	\end{bmatrix}, \quad
+	\mathbf{v_3} = \begin{bmatrix}
+		3 \\
+		5 \\
+		2
+	\end{bmatrix}
+	$$
+	Show that $\mathbf{v_1}$, $\mathbf{v_2}$, and $\mathbf{v_3}$ are linearly independent.
+	
+	\paragraph{Space of Polynomials}
+	Let $\mathbb{P}_2$ be the space of polynomials of degree at most 2.
+	Consider the following polynomials:
+	$$p_1(x) = 1, \quad p_2(x) = 2x, \quad p_3(x) = 3x^2 - 1$$
+	Show that the polynomials $p_1(x)$, $p_2(x)$, and $p_3(x)$ form a spanning set for $\mathbb{P}_2$.\\
+	Express an arbitrary polynomial $q(x) \in \mathbb{P}_2$ as a linear combination of $p_1(x)$, $p_2(x)$, and $p_3(x)$.
+	
+	
+	\section{Matrix Inverses}
+	\paragraph{2x2 Matrices}
+	Let
+	$$A = \begin{bmatrix}
+		2 & 1 \\
+		0 & 2
+	\end{bmatrix}$$
+	Determine whether matrix $A$ is invertible.
+	If it is, find its inverse $A^{-1}$.
+	Verify your result by multiplying $A$ by its inverse $A^{-1}$ and showing that you get the identity matrix.
+	
+	\paragraph{3x3 Matrices}
+	(*) Let
+	$$B = \begin{bmatrix}
+		0 & 1 & 3 \\
+		1 & 2 & 0 \\
+		-1 & 0 & 1
+	\end{bmatrix}$$
+	Determine whether matrix $B$ is invertible. If it is, find its inverse $B^{-1}$.
+	Verify your result by multiplying $B$ by its inverse $B^{-1}$ and showing that you get the identity matrix.
+	
+	
+	\section{Eigenvalues and Eigenvectors}
+	\paragraph{Basic 2x2 Case}
+	(*) Consider the matrix
+	$$A = \begin{bmatrix}
+		3 & 1 \\
+		1 & 3
+	\end{bmatrix}$$
+	Find the eigenvalues of matrix $A$.\\
+	For each eigenvalue, find the corresponding eigenvector.
+	
+	\paragraph{Repeated Eigenvalues}
+	Consider the matrix
+	$$B = \begin{bmatrix}
+		1 & -1 \\
+		0 & 1
+	\end{bmatrix}$$
+	Find the eigenvalues of matrix $B$.\\
+	For each eigenvalue, find the corresponding eigenvector.
+	
+	\paragraph{Basic 3x3 Case}
+	Consider the matrix
+	$$C = \begin{bmatrix}
+		1 & 2 & 0 \\
+		0 & 2 & 0 \\
+		0 & 1 & 3
+	\end{bmatrix}$$
+	Find the eigenvalues of matrix $C$.\\
+	For each eigenvalue, find the corresponding eigenvector.
+	
+	
+	\section{Diagonalization}
+	For each matrix from the "Eigenvalues and Eigenvectors" section,  determine whether matrix is diagonalizable.
+	If it is, diagonalize it by finding a diagonal matrix $D$ and an invertible matrix $P$ such that $A = PDP^{-1}$.
+	
+	\section{Orthogonal Vectors}
+	\paragraph{Orthogonality}
+	Given the vectors
+	$$
+	\mathbf{u} = \begin{bmatrix}
+		2 \\
+		-1 \\
+		0
+	\end{bmatrix}, \quad
+	\mathbf{v} = \begin{bmatrix}
+		1 \\
+		2 \\
+		1
+	\end{bmatrix}, \quad
+	\mathbf{w} = \begin{bmatrix}
+		0 \\
+		1 \\
+		-2
+	\end{bmatrix}
+	$$
+	Determine which of the vectors $\mathbf{u}$, $\mathbf{v}$, and $\mathbf{w}$ are orthogonal to each other.
+	
+	\paragraph{Gram-Schmidt Orthogonalization}
+	(*) Given the vectors
+	$$
+	\mathbf{v}_1 = \begin{bmatrix}
+		1 \\
+		2
+	\end{bmatrix}, \quad
+	\mathbf{v}_3 = \begin{bmatrix}
+		0 \\
+		1
+	\end{bmatrix}
+	$$
+	Apply the Gram-Schmidt orthogonalization process to find an orthonormal basis for the subspace spanned by these vectors.\\
+	Verify that the resulting vectors are indeed orthogonal and normalized (by computing their norm and pairwise dot product).
+	
+	\section{Norms}
+	Given two vectors $\mathbf{v} = \begin{pmatrix} 1 \\ -2 \\ 3 \end{pmatrix}$ and $\mathbf{w} = \begin{pmatrix} -1 \\ 4 \\ -2 \end{pmatrix}$ in $\mathbb{R}^3$, verify the following properties:
+	Verify that $\|\mathbf{v} + \mathbf{w}\|_1 \leq \|\mathbf{v}\|_1 + \|\mathbf{w}\|_1$ (Triangle Inequality for $L_1$ norm).
+	
+	Suppose $\mathbf{v}$ represents the error vector $\mathbf{v} = \begin{pmatrix} -0.1 \\ 0.05 \\ 0.2 \end{pmatrix}$ in a model prediction.
+	\begin{enumerate}
+		\item Compute the $L_1$ norm of $\mathbf{v}$ to measure the L1-loss.
+		\item Compute the $L_2$ norm of $\mathbf{v}$ to measure the L2-loss (Euclidean loss).
+		\item Explain the difference in interpretation between the $L_1$ and $L_2$ norms in the context of error measurement.
+	\end{enumerate}
+	
+	
+\end{document}
