@@ -1,0 +1,282 @@
+\documentclass[]{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{stmaryrd}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\txtand}{\text{ and }}
+\newcommand{\txtor}{\text{ or }}
+\newcommand{\lxor}{\veebar}
+\newcommand{\vecx}{ \vec{\mathbf{x}} }
+\newcommand{\vecxk}{ \vec{\mathbf{x_k}} }
+\newcommand{\vecw}{ \vec{\mathbf{w}} }
+
+%opening
+\title{Notes on Binary Classification\\ \large Support Vector Machines and Logistic Regression}
+\author{DSBA Mathematics Refresher 2026}
+\date{}
+
+\begin{document}
+
+	\maketitle
+
+	\begin{abstract}
+
+	\end{abstract}
+
+	This session is about \textbf{binary classification}: given a set of labelled examples, we want to build a rule that predicts the label of a new, unseen example.
+	We will see two classical methods, which are also two applications of what we have done in the previous sessions:
+	\begin{itemize}
+		\item \textbf{Support Vector Machines}, which lead to a \textit{constrained} optimization problem (Constrained Optimization session);
+		\item \textbf{Logistic regression}, which leads to an \textit{unconstrained} optimization problem, solved by gradient descent (Session 3).
+	\end{itemize}
+
+	\section{The Binary Classification Problem}
+
+	Our data is a set of $N$ labelled points
+	$$
+	\left\{ \left(\vecxk, y_k\right) \right\}_{k=1}^{N}
+	$$
+	where $\vecxk \in \R^n$ describes the $k$-th example (its "features") and $y_k$ is its \textbf{label}.
+	As there are only two classes, the label takes only two values, and it is convenient to write them
+	$$
+	y_k \in \{-1, +1\}
+	$$
+
+	\noindent \textbf{Example:}
+	$\vecxk$ could be $\begin{pmatrix} \text{income} \\ \text{age} \end{pmatrix}$ of a customer, and $y_k$ whether that customer subscribed ($+1$) or not ($-1$).
+	Given a new customer, we want to predict whether they will subscribe.
+
+	We look for a rule of the form: compute some function $h(\vecx)$, and predict $+1$ if $h(\vecx) > 0$, and $-1$ if $h(\vecx) < 0$.
+	The set $\{h(\vecx) = 0\}$ is the \textbf{decision boundary}.
+
+	\section{Separating Hyperplanes}
+
+	The simplest choice is a \textbf{linear} function:
+	$$
+	h(\vecx) = \vecw \cdot \vecx - b
+	$$
+	where $\vecw \in \R^n$ and $b \in \R$ are the parameters to be learned.
+	In $\R^2$, $\{h(\vecx) = 0\}$ is a line; in $\R^3$ it is a plane; in general it is called a \textbf{hyperplane}.
+	It cuts the space into two regions:
+	$$
+	\mathcal{R}_{-1} = \left\{ \vecx : \vecw \cdot \vecx - b < 0 \right\}
+	\qquad \text{and} \qquad
+	\mathcal{R}_{+1} = \left\{ \vecx : \vecw \cdot \vecx - b > 0 \right\}
+	$$
+
+	\paragraph{Handling the two labels at once}
+	\noindent\\
+	Classifying the point $\vecxk$ correctly means
+	$$
+	h(\vecxk) > 0 \ \text{ if } y_k = +1
+	\qquad \text{and} \qquad
+	h(\vecxk) < 0 \ \text{ if } y_k = -1
+	$$
+	In both cases $h(\vecxk)$ has the \textit{same sign} as $y_k$, so their product is positive, and the two conditions collapse into a single one:
+	$$
+	y_k \, h(\vecxk) > 0
+	$$
+	This trick --- multiplying by the label $\pm 1$ to replace a case distinction by one inequality --- is used constantly, and it is the reason for labelling the classes $-1$ and $+1$ rather than $0$ and $1$.
+
+	\paragraph{Distance to the hyperplane}
+	\noindent\\
+	The vector $\vecw$ is perpendicular to the hyperplane.
+	Therefore, if $\vecx_1$ is any point of the hyperplane (so that $\vecw \cdot \vecx_1 = b$), the distance from a point $\vecx_0$ to the hyperplane is the length of the projection of $\vecx_0 - \vecx_1$ onto the unit normal $\frac{\vecw}{\|\vecw\|}$:
+	$$
+	d(\vecx_0) = \left| \left(\vecx_0 - \vecx_1\right) \cdot \frac{\vecw}{\|\vecw\|} \right|
+	= \frac{\left| \vecw \cdot \vecx_0 - b \right|}{\|\vecw\|}
+	$$
+	Note that this does not depend on which point $\vecx_1$ was chosen.
+
+	\noindent \textbf{Example:}
+	In $\R^2$ with $\vecw = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and $b = \frac{3}{2}$, the hyperplane is the line $x + y = \frac{3}{2}$, and the distance from the point $(1,1)$ to it is
+	$$
+	\frac{\left| 1 + 1 - \frac{3}{2} \right|}{\sqrt{1^2+1^2}} = \frac{1/2}{\sqrt{2}} = \frac{\sqrt{2}}{4} \approx 0.354
+	$$
+
+	\section{Support Vector Machines}
+
+	When the data is \textbf{linearly separable}, there are usually \textit{infinitely many} hyperplanes separating the two classes.
+	Which one should we choose?
+
+	The idea of the Support Vector Machine is to pick the one that leaves as much room as possible on both sides: the one \textbf{maximizing the margin}.
+
+	\paragraph{The margin}
+	\noindent\\
+	Notice that $h$ and $2h$ define the same decision boundary: multiplying $\vecw$ and $b$ by the same positive number changes nothing.
+	We can therefore fix the scale by requiring that the closest points satisfy $|h(\vecxk)| = 1$.
+	The picture is then made of three regions:
+	$$
+	\mathcal{R}_{-1}: \ \vecw \cdot \vecx - b < -1,
+	\qquad
+	\mathcal{R}_{0}: \ \left| \vecw \cdot \vecx - b \right| < 1,
+	\qquad
+	\mathcal{R}_{+1}: \ \vecw \cdot \vecx - b > 1
+	$$
+	where $\mathcal{R}_0$ is the \textbf{margin band}, which should contain no data point at all.
+
+	Its width is computed as follows: let $\vecx_-$ and $\vecx_+$ be two points, one on each edge, with $\vecx_+ - \vecx_- = d \cdot \frac{\vecw}{\|\vecw\|}$ perpendicular to both edges.
+	Subtracting the two equations $\vecw \cdot \vecx_+ - b = 1$ and $\vecw \cdot \vecx_- - b = -1$:
+	$$
+	\vecw \cdot \left( \vecx_+ - \vecx_- \right) = 2
+	\qquad \Longrightarrow \qquad
+	d \, \|\vecw\| = 2
+	\qquad \Longrightarrow \qquad
+	d = \frac{2}{\|\vecw\|}
+	$$
+
+	\paragraph{The optimization problem}
+	\noindent\\
+	Requiring every point to be correctly classified \textit{and} outside the margin band is written, with the same trick as before,
+	$$
+	y_k \left( \vecw \cdot \vecxk - b \right) \geq 1
+	\qquad \text{for all } k
+	$$
+	and maximizing the margin $\frac{2}{\|\vecw\|}$ means minimizing $\|\vecw\|$.
+	The SVM is therefore the solution of
+	$$
+	\text{minimize } \ \frac{1}{2}\|\vecw\|^2
+	\qquad \text{subject to} \qquad
+	y_k \left( \vecw \cdot \vecxk - b \right) \geq 1 \quad \text{for all } k
+	$$
+	We minimize $\frac{1}{2}\|\vecw\|^2$ rather than $\|\vecw\|$ because it has the same minimizer and is much nicer to differentiate.
+
+	This is exactly a constrained optimization problem with inequality constraints, of the kind studied in the Constrained Optimization session: it is solved with Lagrange multipliers (one per data point) and slack variables.
+	The details are outside the scope of this course --- in practice, we let a computer solve it.
+
+	\paragraph{Support vectors}
+	\noindent\\
+	At the optimum, most constraints are \textit{inactive} (their multiplier is $0$): the corresponding points are strictly outside the margin band and play no role.
+	The points for which $y_k h(\vecxk) = 1$ --- those lying exactly on the edges of the band --- are the \textbf{support vectors}, and they alone determine the solution.
+	Moving or deleting any other point does not change the answer.
+	This is where the method gets its name, and it is also what makes it economical: the model is described by a handful of points.
+
+	\section{Non-Separable Data: the Kernel Trick}
+
+	Real data is rarely linearly separable.
+	Two classical answers:
+	\begin{itemize}
+		\item \textbf{Soft margin:} allow a few points to violate the constraints, at a price added to the cost function.
+		\item \textbf{Kernel trick:} send the data into a bigger space through a non-linear map $\phi$, and look for a hyperplane \textit{there}.
+	\end{itemize}
+
+	\noindent \textbf{Example:}
+	Take the points $(0,\pm 1)$ and $(\pm 1, 0)$ in the class $+1$, and $(0,\pm 2)$ and $(\pm 2, 0)$ in the class $-1$.
+	The first four are on the circle of radius $1$, the last four on the circle of radius $2$: no line can separate them, since one class surrounds the other.
+
+	Now apply
+	$$
+	\phi(x,y) = \left( x^2 + y^2, \ x^2 - y^2 \right)
+	$$
+	The four positive points are all sent to points with first coordinate $1$, and the four negative points to points with first coordinate $4$.
+	In these new coordinates $(u,v)$, the vertical line $u = \frac{5}{2}$ separates them perfectly.
+
+	Coming back to the original coordinates, $u = \frac{5}{2}$ means $x^2 + y^2 = \frac{5}{2}$: the separating "line" of the new space is a \textbf{circle} in the original one.
+	A linear separation after transformation is a non-linear separation before it.
+
+	\section{Logistic Regression}
+
+	The SVM outputs a hard decision: $+1$ or $-1$.
+	Often we would rather have a \textbf{probability}: "this customer subscribes with probability $0.8$".
+	This is what logistic regression provides.
+
+	\paragraph{The model}
+	\noindent\\
+	We keep a linear function of the features, but we squash it into the interval $(0,1)$ with the \textbf{sigmoid} function
+	$$
+	\sigma(z) = \frac{1}{1 + e^{-z}}
+	$$
+	so that the model reads (here with labels written $0$ and $1$, which is the usual convention for this method)
+	$$
+	P(Y = 1 \mid X = x) = \sigma\left(\beta_0 + \beta_1 x\right) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x)}}
+	$$
+	The sigmoid is increasing, tends to $0$ at $-\infty$ and to $1$ at $+\infty$, and $\sigma(0) = \frac{1}{2}$.
+	The decision boundary --- where the model hesitates between the two classes --- is therefore $\beta_0 + \beta_1 x = 0$.
+
+	It also satisfies two identities that we will use constantly:
+	$$
+	\sigma(-z) = 1 - \sigma(z)
+	\qquad \text{and} \qquad
+	\sigma'(z) = \sigma(z)\left(1 - \sigma(z)\right)
+	$$
+	The first says $P(Y=0) = 1 - P(Y=1)$, as it must; the second is what makes the gradient below so simple.
+
+	\paragraph{Why the sigmoid? Odds and log-odds}
+	\noindent\\
+	The sigmoid is not an arbitrary way of squashing a number into $(0,1)$.
+	Recall that the \textbf{odds} of an event of probability $p$ are $\frac{p}{1-p}$ (a probability of $0.75$ gives odds of $3$, i.e. "3 to 1").
+	If $p = \sigma(z)$, then, using $1 - p = \sigma(-z)$:
+	$$
+	\frac{p}{1-p} = e^{z}
+	\qquad \text{that is} \qquad
+	\log\left(\frac{p}{1-p}\right) = z = \beta_0 + \beta_1 x
+	$$
+	So logistic regression is a \textit{linear} model --- not of the probability, but of the \textbf{log-odds}.
+	This is what one should remember, for two reasons:
+	\begin{itemize}
+		\item it explains the shape of the model: a quantity that grows without bound (the log-odds) is converted into one that saturates (a probability);
+		\item it is how the coefficients are read in practice.
+		Adding one to $x$ adds $\beta_1$ to the log-odds, hence \textbf{multiplies the odds by $e^{\beta_1}$} --- a factor that does not depend on where we started.
+		A coefficient $\beta_1 = 0.64$ means "one extra unit multiplies the odds by $e^{0.64} \approx 1.9$", which is a sentence a client can act on, whereas "$\beta_1 = 0.64$" is not.
+	\end{itemize}
+
+	\paragraph{The cost function: log loss}
+	\noindent\\
+	To fit $\beta_0$ and $\beta_1$, we need to measure how wrong the model is.
+	The usual choice is the \textbf{log loss} (also called cross-entropy):
+	$$
+	\mathcal{L}(\beta_0, \beta_1) = -\sum_{k=1}^{N} \Big[ y_k \log\left(p_k\right) + \left(1 - y_k\right) \log\left(1 - p_k\right) \Big],
+	\qquad \text{where } p_k = \sigma\left(\beta_0 + \beta_1 x_k\right)
+	$$
+	Since $y_k$ is $0$ or $1$, exactly one of the two terms survives for each point, and the contribution of the point is
+	$$
+	-\log\left(\text{probability the model assigned to the correct answer}\right)
+	$$
+	It is $0$ for a perfect prediction, and grows to $+\infty$ as the model becomes confidently wrong.
+	This last property is what makes the log loss much more suitable than the squared error here: it punishes confident mistakes very severely.
+
+	\paragraph{Minimizing the cost}
+	\noindent\\
+	Unlike the linear regression of Session 3, this minimization has no closed-form solution: we use \textbf{gradient descent}.
+	The gradient takes a remarkably simple form:
+	$$
+	\frac{\partial \mathcal{L}}{\partial \beta_0} = \sum_{k=1}^{N} \left( p_k - y_k \right)
+	\qquad \text{and} \qquad
+	\frac{\partial \mathcal{L}}{\partial \beta_1} = \sum_{k=1}^{N} x_k \left( p_k - y_k \right)
+	$$
+	(the term $p_k - y_k$ is simply the error made on the $k$-th point), and the parameters are updated with
+	$$
+	\beta_0 \leftarrow \beta_0 - \eta \, \frac{\partial \mathcal{L}}{\partial \beta_0}
+	\qquad \text{and} \qquad
+	\beta_1 \leftarrow \beta_1 - \eta \, \frac{\partial \mathcal{L}}{\partial \beta_1}
+	$$
+	where $\eta$ is the learning rate.
+
+	Note that at the minimum the gradient vanishes, which gives the two identities
+	$$
+	\sum_{k} p_k = \sum_{k} y_k
+	\qquad \text{and} \qquad
+	\sum_{k} x_k \, p_k = \sum_{k} x_k \, y_k
+	$$
+	They are a convenient way of checking a numerical result.
+
+	\paragraph{Everything extends to more features}
+	\noindent\\
+	With $\vecx \in \R^n$ instead of a single number $x$, the model becomes
+	$$
+	P(Y = 1 \mid \vecx) = \sigma\left( \vecw \cdot \vecx + b \right)
+	$$
+	and all the formulas above hold, with $x_k$ replaced by $\vecxk$.
+	The decision boundary $\vecw \cdot \vecx + b = 0$ is again a hyperplane: like the SVM, logistic regression is a \textit{linear} classifier --- the two methods differ in what they optimize, not in the shape of their boundary.
+
+\end{document}

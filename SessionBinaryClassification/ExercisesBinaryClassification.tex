@@ -1,0 +1,284 @@
+\documentclass[]{article}
+\usepackage[margin=2cm]{geometry}
+
+%opening
+\title{Exercises Set: Binary Classification}
+\author{DSBA Mathematics Refresher 2026}
+\date{}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{stmaryrd}
+\usepackage{graphicx}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\txtand}{\text{ and }}
+\newcommand{\txtor}{\text{ or }}
+\newcommand{\lxor}{\veebar}
+\newcommand{\vecx}{ \vec{\mathbf{x}} }
+\newcommand{\vecxk}{ \vec{\mathbf{x_k}} }
+\newcommand{\vecw}{ \vec{\mathbf{w}} }
+
+
+
+\begin{document}
+
+	\maketitle
+
+	\begin{abstract}
+		As this is the last session, there will be no compulsory questions this time.
+	\end{abstract}
+
+	\section{Support Vector Machines}
+	\begin{center}
+		\includegraphics[height=4cm]{SVM_illustration}
+	\end{center}
+	
+	\subsection{Theory}
+	Define a line in $\R^2$ with parameters $\vecw = \begin{pmatrix} w_1 \\ w_2 \end{pmatrix}$ and $b$
+	\footnote{
+		Here, $\vecw = \begin{pmatrix} w_1 \\ w_2 \end{pmatrix}$, $\vecx = \begin{pmatrix} x \\ y \end{pmatrix}$, and $b$ is a scalar.
+		We use this notation because it makes it very easy to extend the technique to higher dimensions.
+		For example, you can just add one component to use a plane to separate points in $\mathbb{R}^3$
+	}
+	defined by $\vecw.\vecx = b$ (or $\vecw.\vecx - b = 0$) for $\vecx = \begin{pmatrix} x \\ y \end{pmatrix} \in \R^2$.
+	This line cut the plane in 2 regions:
+	\begin{itemize}
+		\item $\mathcal{R}_{-1}$: $\vecx \in \R^2$ such that $\vecw.\vecx - b < 0$
+		\item $\mathcal{R}_{+1}$: $\vecx \in \R^2$ such that $\vecw.\vecx - b > 0$
+	\end{itemize}
+	The goal is to find $\vecw$ and $b$ such that all points of the first class are in the first region, and all points of the second class are in the second region.
+	
+	Let our data be $\{ (\vecxk, y_k) \}_{k=1}^N$ where $\vecxk$ is the coordinate of the point in $\R^2$ and $y_k$ is the label ($+1$ or $-1$).
+	
+	The best line is not only separating the data in two sets, but also maximizing the distance between the line and the points.
+	
+	\begin{enumerate}
+		\item Calculate the distance between the line and a point $\vecx \in \R^2$.
+		% distance: $\frac{\mid \vecw \cdot \vecx - b \mid}{\mid \mid \vecw \mid \mid}$
+	\end{enumerate}
+	
+	\vspace{0.5cm}
+	
+	Let $h(\vecx) = \vecw^T \cdot \vecx - b$.
+	We will predict first class $-1$ if $h(\vecx)<0$ (as this means $\vecx \in \mathcal{R}_{-1}$); and second class $+1$ if $h(\vecx)>0$ (as this means $\vecx \in \mathcal{R}_{+1}$).
+	To have each item of data classified correctly, we need:
+	\begin{itemize}
+		\item if $y_k = +1$ then $h(\vecxk)>0$
+		\item if $y_k = -1$ then $h(\vecxk)<0$
+	\end{itemize}
+	\begin{enumerate}
+		\setcounter{enumi}{1}
+		\item Derive a condition that ensures correct classification if true for all $k$.
+		% need: $y_k \cdot h(\vecxk) > 0 \ \forall k$.
+	\end{enumerate}
+	
+	\vspace{0.5cm}
+	
+	Assuming the data is linearly separable, we now define 3 regions:
+	\begin{itemize}
+		\item $\mathcal{R}_{-1}$: $\vecx \in \R^2$ such that $\vecw.\vecx - b < -1$
+		\item $\mathcal{R}_{ 0}$: $\vecx \in \R^2$ such that $\mid \vecw.\vecx - b \mid < 1$ \textit{(the "margin band")}
+		\item $\mathcal{R}_{+1}$: $\vecx \in \R^2$ such that $\vecw.\vecx - b > 1$
+	\end{itemize}
+	\begin{enumerate}
+		\setcounter{enumi}{2}
+		\item Calculate the margin band width.
+		% margin size: $\frac{2}{\mid \mid \vecw \mid \mid}$
+		\item Formulate the constrained optimization problem to find the best (i.e. maximizing the margin) parameters $\vecw$ and $b$.
+		% problem: $\text{minimize}_{\vecw, b} \mid \mid \vecw \mid \mid$
+		% such that $y_k (\vecw.\vecxk - b) \geq 1 \quad \forall k$
+	\end{enumerate}
+	
+	\subsection{Practice}
+	The training dataset consists of the following data points:
+	
+	Positive class ("+1"):
+	\begin{itemize}
+		\item (2, 2)
+		\item (1, 1)
+	\end{itemize}
+	Negative class ("-1"):
+	\begin{itemize}
+		\item (0, 1)
+		\item (1, 0)
+	\end{itemize}
+	
+	\begin{enumerate}
+		\item Plot the points in a 2D graph.
+		\item Using the graph, find the optimal $\vecw$.
+		\item Calculate the optimal value of \(b\) to separate the data points while maximizing the margin.
+		\item Determine the equation of the optimal hyperplane in the form \(\vecw \cdot \vecx + b = 0\).
+		\item Identify the support vectors in the dataset.
+		\item Calculate the margin, which is the perpendicular distance from the hyperplane to the nearest support vector.
+		\item Classify a new data point, \((3, 2)\), based on the learned SVM model.
+	\end{enumerate}
+	\textit{Remarks:}\\
+	Here, we have made educated guesses to find $\vecw$ and $b$; in practice, we need to solve the constrained optimization problem stated above.\\
+	This can be done using Lagrange multiplier, the details are outside the scope of this course.\\
+	In practice, we let computers solve the problem for us.
+	
+	
+	
+	\subsection{Kernel}
+	Suppose we have the following data:
+	Positive class ("+1"):
+	\begin{itemize}
+		\item (0, 1)
+		\item (0, -1)
+		\item (1, 0)
+		\item (-1, 0)
+	\end{itemize}
+	Negative class ("-1"):
+	\begin{itemize}
+		\item (0, 2)
+		\item (0, -2)
+		\item (2, 0)
+		\item (-2, 0)
+	\end{itemize}
+	\begin{enumerate}
+		\item Plot the data points.\\
+		Observe that there is no line separating the two classes perfectly.
+	\end{enumerate}
+
+	\vspace{0.5cm}
+
+	Let $\phi(x,y) = (x^2 + y^2, x^2-y^2)$.
+	\begin{enumerate}
+		\setcounter{enumi}{1}
+		\item Compute $\phi(x,y)$ for every point, and plot them on a new graph.\\
+		Observe that the two classes should now be separable by a line
+		\footnote{
+			The "kernel trick" allows us to perform an SVM on data transformed by a non-linear function; the details are outside the scope of this course.
+		}.
+	\end{enumerate}
+	
+	
+	
+	
+
+	\section{Logistic Regression}
+
+	The SVM answers with a hard "yes" or "no".
+	Often we would rather have a \textbf{probability}: not "this student will pass", but "this student passes with probability $0.8$".
+	This is what logistic regression gives us.
+
+	Throughout this section, we work with the following data: the number of hours a student has studied, and whether they passed the exam.
+
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{|c|c|}
+			\hline
+			Hours Studied ($X$) & Pass ($Y$) \\
+			\hline
+			0 & 0 (no) \\
+			4 & 0 (no) \\
+			3 & 1 (yes) \\
+			8 & 1 (yes) \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\noindent
+	The model we want to fit is
+	$$P(Y=1 \mid X=x) = \sigma\left(\beta_0 + \beta_1 x\right) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x)}}$$
+	where $\sigma$ is the \textbf{sigmoid} function
+	$$\sigma(z) = \frac{1}{1+e^{-z}}$$
+
+	\subsection{The sigmoid function}
+	Before fitting anything, let us get familiar with $\sigma$.
+	\begin{enumerate}
+		\item Compute $\sigma(0)$, $\sigma(2)$ and $\sigma(-2)$.
+		\item What are the limits of $\sigma(z)$ as $z \to +\infty$ and as $z \to -\infty$?
+		Deduce that $\sigma$ takes its values in $(0,1)$ --- which is what allows us to read it as a probability.
+		\item Show that $\sigma(-z) = 1 - \sigma(z)$.\\
+		\textit{Hint:} multiply the numerator and the denominator of $\sigma(-z)$ by $e^{-z}$.
+		\item Show that
+		$$\sigma'(z) = \sigma(z)\left(1 - \sigma(z)\right)$$
+		This surprisingly simple derivative is the reason logistic regression is so pleasant to optimize; we will use it in Section 2.4.
+		\item Sketch the graph of $\sigma$.
+		For which value of $z$ does the model hesitate between the two classes?
+	\end{enumerate}
+
+	\subsection{Odds and log-odds}
+	Gamblers do not speak of the probability $p$ of an event, but of its \textbf{odds} $\frac{p}{1-p}$ (a probability of $0.75$ means odds of $3$, i.e. "3 to 1").
+
+	\begin{enumerate}
+		\item Let $p = \sigma(z)$. Show that
+		$$\frac{p}{1-p} = e^{z}
+		\qquad \text{and therefore} \qquad
+		\log\left(\frac{p}{1-p}\right) = z$$
+		\item Deduce that, for our model,
+		$$\log\left(\frac{P(Y=1 \mid X=x)}{P(Y=0 \mid X=x)}\right) = \beta_0 + \beta_1 x$$
+		In words: logistic regression is a \textit{linear} model --- not of the probability, but of the \textbf{log-odds}.
+		\item Suppose a student studies one hour more.
+		By what factor are their odds of passing multiplied?
+		(Your answer should depend on $\beta_1$ only.)
+	\end{enumerate}
+	\textit{This is how logistic regression is read in practice: the coefficient $\beta_1$ is not a change in probability, it is a multiplier on the odds.}
+
+	\subsection{Measuring how good a model is}
+	Take, for now, the (arbitrary) parameters
+	$$\beta_0 = -2 \qquad \text{and} \qquad \beta_1 = 0.6$$
+
+	\begin{enumerate}
+		\item Compute the four predicted probabilities $p_k = P(Y=1 \mid X = x_k)$ for the four students of the table.
+		\item If we predict "pass" whenever $p_k > 0.5$, how many of the four students are correctly classified?
+		\item The \textbf{log loss} of a single data point is
+		$$\ell(x_k, y_k) = -\left( y_k \log(p_k) + (1-y_k) \log(1-p_k) \right)$$
+		Explain why, since $y_k$ is either $0$ or $1$, this is always equal to
+		$$-\log\left(\text{the probability the model gave to the \textit{correct} answer}\right)$$
+		\item Compute the log loss of each of the four points.
+		Which point costs the most? Does that match your intuition?
+		\item The \textbf{total cost} is $\mathcal{L}(\beta_0,\beta_1) = \sum_{k=1}^{4} \ell(x_k,y_k)$.
+		Compute it.
+		\item What would the total cost be for a model that predicts $p = \frac{1}{2}$ for everybody (i.e. $\beta_0 = \beta_1 = 0$)?
+		Is our model better than that?
+		\item What happens to the log loss of a point if the model gives probability $0$ to the correct answer?
+		Why is this a desirable property for a cost function?
+	\end{enumerate}
+
+	\subsection{Fitting the model}
+	We now look for the $\beta_0$ and $\beta_1$ that make the total cost as small as possible.
+	Unlike the linear regression of Session 3, there is no formula for the answer: we must use gradient descent.
+
+	\begin{enumerate}
+		\item Using $\sigma' = \sigma(1-\sigma)$, show that for a single data point
+		$$\frac{\partial \ell}{\partial \beta_0} = p_k - y_k
+		\qquad \text{and} \qquad
+		\frac{\partial \ell}{\partial \beta_1} = x_k \left( p_k - y_k \right)$$
+		and deduce the two partial derivatives of the total cost $\mathcal{L}$.\\
+		\textit{Remark:} the quantity $p_k - y_k$ is simply the error made on the $k$-th point. It is hard to imagine a simpler gradient.
+		\item Write the two update rules of gradient descent for $\beta_0$ and $\beta_1$, with a learning rate $\eta$.
+		\item Starting from $\beta_0 = \beta_1 = 0$ and with $\eta = 0.05$, perform \textbf{one} step by hand.
+		Comment on the sign of the change of $\beta_1$.
+		\item Using a computer, iterate until convergence and give the fitted $\beta_0$ and $\beta_1$, and the minimal cost.
+		(A notebook is provided; you may also use the grid search of Session 3 to get a first rough answer.)
+		\item At the minimum, the gradient vanishes.
+		Show that this means
+		$$\sum_{k} p_k = \sum_{k} y_k
+		\qquad \text{and} \qquad
+		\sum_{k} x_k \, p_k = \sum_{k} x_k \, y_k$$
+		and use these two identities to check your numerical answer.
+	\end{enumerate}
+
+	\subsection{Reading the fitted model}
+	\begin{enumerate}
+		\item Estimate the probability of passing for a student who studied $0$, $1$ and $10$ hours.
+		\item Above how many hours of study does the model predict a pass?
+		(This is the \textbf{decision boundary}; express it in terms of $\beta_0$ and $\beta_1$ before computing it.)
+		\item Using Section 2.2, give the factor by which one extra hour of study multiplies the odds of passing.
+		\item Can this model classify all four students of the table correctly?
+		Look again at the data before answering, and explain what this implies for the minimal cost you found.
+		\item Would you trust these numbers to advise a real student?
+	\end{enumerate}
+
+\end{document}
