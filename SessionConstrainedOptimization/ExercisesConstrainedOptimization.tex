@@ -12,6 +12,7 @@
 \usepackage{amssymb}
 \usepackage{mathrsfs}
 \usepackage{stmaryrd}
+\usepackage{tikz}
 \usepackage{graphicx}
 
 \newcommand{\Q}{\mathbb{Q}}
@@ -113,6 +114,17 @@
 		\item Draw the circle, and draw a few level lines of $f$ (i.e. the lines $x + y = c$ for several values of $c$).
 		What is special about the level line passing through the two points you found?
 	\end{enumerate}
+	\begin{center}
+		\begin{tikzpicture}[scale=1.55]
+			\draw[->] (-1.6,0) -- (1.75,0) node[right] {\scriptsize $x$};
+			\draw[->] (0,-1.6) -- (0,1.75) node[above] {\scriptsize $y$};
+			\draw[thick] (0,0) circle (1);
+			\draw (1,0.04) -- (1,-0.04); \node[below right] at (1,-0.02) {\scriptsize $1$};
+			\draw (0.04,1) -- (-0.04,1); \node[above left] at (-0.02,1) {\scriptsize $1$};
+			\node[right] at (0.78,-0.85) {\scriptsize $x^2+y^2=1$};
+			\draw[gray] (0.78,-0.82) -- (0.6,-0.8);
+		\end{tikzpicture}
+	\end{center}
 	\textit{This last question is the whole idea behind the method: at the optimum, the level line of $f$ is tangent to the constraint, which is exactly what $\nabla f = \lambda \nabla g$ says.}
 
 	\subsection{Several constraints}
