@@ -35,3 +35,5 @@ The order of the sessions may change according to the students convenience.
     - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionBinaryClassification/NotesBinaryClassification.pdf)
     - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionBinaryClassification/ExercisesBinaryClassification.pdf)
     - [Notebook](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionBinaryClassification/LogisticRegression.ipynb)
+- Session 10: Introduction to Itô Calculus *(optional, to be done from home autonomously)*
+    - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionItoCalculus/NotesItoCalculus.pdf)
