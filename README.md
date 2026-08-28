@@ -22,23 +22,22 @@ The order of the sessions may change according to the students convenience.
     - [Solutions](SessionOptimization/NotebookOptimization_Solutions.pdf)
     - [Notebook](SessionOptimization/NotebookOptimization_Solutions.ipynb)
     - [In Class Notebook](SessionOptimization/InClassNotebook.ipynb)
-    
 - Session 4 & 5: Linear Algebra
-    - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionLinearAlgebra/NotesLinearAlgebra.pdf)
-    - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionLinearAlgebra/ExercisesLinearAlgebra.pdf)
-- Session 6: Principal Components Analysis
-    - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionPCA/NotesPCA.pdf)
-    - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionPCA/ExercisesPCA.pdf)
-    - [Notebook](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionPCA/NotebookPCA.ipynb)
-- Session 7: Differential Equations
-    - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionDifferentialEquations/NotesDifferentialEquations.pdf)
-    - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionDifferentialEquations/ExercisesDifferentialEquations.pdf)
-- Session 8: Constrained Optimization
-    - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionConstrainedOptimization/NotesConstrainedOptimization.pdf)
-    - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionConstrainedOptimization/ExercisesConstrainedOptimization.pdf)
-- Session 9: Binary Classification
-    - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionBinaryClassification/NotesBinaryClassification.pdf)
-    - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionBinaryClassification/ExercisesBinaryClassification.pdf)
-    - [Notebook](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionBinaryClassification/LogisticRegression.ipynb)
-- Session 10: Introduction to Itô Calculus *(optional, to be done from home autonomously)*
-    - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionItoCalculus/NotesItoCalculus.pdf)
+    - [Notes](SessionLinearAlgebra/NotesLinearAlgebra.pdf)
+    - [Problem Set](SessionLinearAlgebra/ExercisesLinearAlgebra.pdf)
+    - [Solutions](SessionLinearAlgebra/ExercisesLinearAlgebra-Solutions.pdf)
+- Session 5: Principal Components Analysis
+    - [Notes](SessionPCA/NotesPCA.pdf)
+    - [Problem Set](SessionPCA/ExercisesPCA.pdf)
+    - [Notebook](SessionPCA/NotebookPCA.ipynb)
+- Session 6: Differential Equations
+    - [Notes](SessionDifferentialEquations/NotesDifferentialEquations.pdf)
+    - [Problem Set](SessionDifferentialEquations/ExercisesDifferentialEquations.pdf)
+- Session 7: Constrained Optimization
+    - [Notes](SessionConstrainedOptimization/NotesConstrainedOptimization.pdf)
+    - [Problem Set](SessionConstrainedOptimization/ExercisesConstrainedOptimization.pdf)
+- Session 8: Binary Classification
+    - [Notes](SessionBinaryClassification/NotesBinaryClassification.pdf)
+    - [Problem Set](SessionBinaryClassification/ExercisesBinaryClassification.pdf)
+- Session 9: Introduction to Itô Calculus *(optional, to be done from home autonomously)*
+    - [Notes](SessionItoCalculus/NotesItoCalculus.pdf)
