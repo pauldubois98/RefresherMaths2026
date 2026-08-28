@@ -9,8 +9,9 @@ Validating a session can be done either by *coming in person to the session*, or
 The order of the sessions may change according to the students convenience.
 
 - Session 1: Combinatorics
-    - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionCombinatorics/NotesCombinatorics.pdf)
-    - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionCombinatorics/ExercisesCombinatorics.pdf)
+    - [Notes](SessionCombinatorics/NotesCombinatorics.pdf)
+    - [Problem Set](SessionCombinatorics/ExercisesCombinatorics.pdf)
+    - [Solutions](SessionCombinatorics/ExercisesCombinatorics-Solutions.pdf)
 - Session 2: Calculus
     - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionCalculus/NotesCalculus.pdf)
     - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionCalculus/ExercisesCalculus.pdf)
