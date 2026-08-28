@@ -17,7 +17,10 @@ The order of the sessions may change according to the students convenience.
 - Session 3: Optimization
     - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionOptimization/NotesOptimization.pdf)
     - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionOptimization/ExercisesOptimization.pdf)
+    - [Solutions](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionOptimization/NotebookOptimization_Solutions.pdf)
     - [Notebook](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionOptimization/NotebookOptimization_Solutions.ipynb)
+    - [In Class Notebook](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionOptimization/InClassNotebook.ipynb)
+    
 - Session 4 & 5: Linear Algebra
     - [Notes](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionLinearAlgebra/NotesLinearAlgebra.pdf)
     - [Problem Set](https://github.com/pauldubois98/RefresherMaths2026/blob/main/SessionLinearAlgebra/ExercisesLinearAlgebra.pdf)
