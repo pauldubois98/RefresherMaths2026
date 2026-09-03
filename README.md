@@ -29,7 +29,11 @@ The order of the sessions may change according to the students convenience.
 - Session 5: Principal Components Analysis
     - [Notes](SessionPCA/NotesPCA.pdf)
     - [Problem Set](SessionPCA/ExercisesPCA.pdf)
+    - [Solutions](SessionPCA/ExercisesPCA-Solutions.pdf)
     - [Notebook](SessionPCA/NotebookPCA.ipynb)
+    - [In Class Notebook](SessionPCA/NotebookPCA-inclass.ipynb)
+    - [Notebook Solutions](SessionPCA/NotebookPCA_solutions.ipynb)
+    - [Notebook Solutions PDF](SessionPCA/NotebookPCA_solutions.pdf)
 - Session 6: Differential Equations
     - [Notes](SessionDifferentialEquations/NotesDifferentialEquations.pdf)
     - [Problem Set](SessionDifferentialEquations/ExercisesDifferentialEquations.pdf)

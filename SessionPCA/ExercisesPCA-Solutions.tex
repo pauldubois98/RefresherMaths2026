@@ -1,0 +1,502 @@
+\documentclass[]{article}
+\usepackage[margin=2cm]{geometry}
+
+%opening
+\title{Exercises Set: Principal Components Analysis\\ \large Solutions}
+\author{DSBA Mathematics Refresher 2026}
+\date{}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{stmaryrd}
+\usepackage{graphicx}
+\usepackage{tikz}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\txtand}{\text{ and }}
+\newcommand{\txtor}{\text{ or }}
+\newcommand{\lxor}{\veebar}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\newenvironment{simplify}{%
+	\par\medskip\noindent
+	\begin{tabular}{@{}p{0.965\linewidth}@{}}
+		\hline\rule{0pt}{2.6ex}\itshape
+}{%
+		\\[0.6ex]\hline
+	\end{tabular}
+	\par\medskip
+}
+
+\begin{document}
+
+	\maketitle
+
+	\begin{abstract}
+		Full solutions.
+		Throughout, variances and covariances use the \emph{sample} convention $\frac{1}{n-1}$ of the notes.
+		Boxes marked \textit{Simplifying the computation} point out the shortcuts that keep everything doable with pen and paper, and say what to do when a number is genuinely not computable by hand.
+	\end{abstract}
+
+	\section{Change of Basis}
+
+	\paragraph{From $\mathcal{B}'$ to $\mathcal{B}$}\mbox{}
+
+	Saying $\mathbf{v} = (-1, 3, 2)^\top_{\mathcal{B}'}$ means $\mathbf{v} = -\mathbf{u}_1 + 3\mathbf{u}_2 + 2\mathbf{u}_3$.
+	Since the columns of $Q$ are exactly $\mathbf{u}_1, \mathbf{u}_2, \mathbf{u}_3$ written in $\mathcal{B}$, this is simply $\mathbf{v}_\mathcal{B} = Q \mathbf{v}_{\mathcal{B}'}$:
+	$$
+	\mathbf{v}_{\mathcal{B}}
+	= -\begin{pmatrix} 0.5 \\ -1 \\ 1 \end{pmatrix}
+	+ 3\begin{pmatrix} 2 \\ 0 \\ -1 \end{pmatrix}
+	+ 2\begin{pmatrix} -0.25 \\ 0.5 \\ 0 \end{pmatrix}
+	= \begin{pmatrix} -0.5 + 6 - 0.5 \\ 1 + 0 + 1 \\ -1 - 3 + 0 \end{pmatrix}
+	= \begin{pmatrix} 5 \\ 2 \\ -4 \end{pmatrix}_{\mathcal{B}}
+	$$
+
+	\paragraph{From $\mathcal{B}$ to $\mathcal{B}'$}\mbox{}
+
+	This is the other direction, $\mathbf{w}_{\mathcal{B}'} = Q^{-1} \mathbf{w}_{\mathcal{B}}$.
+	Rather than inverting $Q$, solve $Q\,\mathbf{c} = \mathbf{w}$ directly, which is one small triangular-ish system:
+	$$
+	\begin{cases}
+		0.5\,c_1 + 2\,c_2 - 0.25\,c_3 &= -1 \\
+		-c_1 \phantom{{}+2c_2} + 0.5\,c_3 &= 3 \\
+		c_1 - c_2 \phantom{{}+0.5c_3} &= 2
+	\end{cases}
+	$$
+	The last two equations give $c_1 = \tfrac{1}{2}c_3 - 3$ and $c_2 = c_1 - 2 = \tfrac{1}{2}c_3 - 5$.
+	Substituting into the first:
+	$$
+	\tfrac{1}{2}\left(\tfrac{1}{2}c_3 - 3\right) + 2\left(\tfrac{1}{2}c_3 - 5\right) - \tfrac{1}{4}c_3
+	= \tfrac{1}{4}c_3 + c_3 - \tfrac{1}{4}c_3 - \tfrac{3}{2} - 10
+	= c_3 - \tfrac{23}{2} = -1
+	$$
+	so $c_3 = \tfrac{21}{2}$, then $c_1 = \tfrac{21}{4} - 3 = \tfrac{9}{4}$ and $c_2 = \tfrac{21}{4} - 5 = \tfrac{1}{4}$:
+	$$
+	\mathbf{w}_{\mathcal{B}'} = \begin{pmatrix} 2.25 \\ 0.25 \\ 10.5 \end{pmatrix}_{\mathcal{B}'}
+	$$
+	Sanity check: $2.25\,\mathbf{u}_1 + 0.25\,\mathbf{u}_2 + 10.5\,\mathbf{u}_3 = (1.125 + 0.5 - 2.625,\ -2.25 + 0 + 5.25,\ 2.25 - 0.25 + 0)^\top = (-1, 3, 2)^\top$.
+
+	\begin{simplify}
+		Do not invert the $3\times3$ matrix.
+		Inverting costs a cofactor matrix (nine $2\times2$ determinants), whereas solving the single system $Q\mathbf{c}=\mathbf{w}$ costs three substitutions.
+		Invert only if you have to change the basis of many vectors.
+		Here the arithmetic stays easy because $\det Q = 1$, which you can check with the rule of Sarrus.
+	\end{simplify}
+
+	\section{Variance and Covariance}
+
+	Write $\mathcal{S}_1 = \{1.5, 3, 5, 7.5, 8, 9\}$ and $\mathcal{S}_2 = \{0, 2, 4, 6, 8, 10\}$, both of size $n = 6$.
+
+	\paragraph{Means}\mbox{}
+	$$
+	\bar{x}_1 = \frac{1.5 + 3 + 5 + 7.5 + 8 + 9}{6} = \frac{34}{6} = \frac{17}{3} \approx 5.667
+	\qquad
+	\bar{x}_2 = \frac{0 + 2 + 4 + 6 + 8 + 10}{6} = 5
+	$$
+
+	\paragraph{Deviations}\mbox{}
+
+	It is worth writing the two lists of deviations once and reusing them for everything else.
+	For $\mathcal{S}_1$, on the common denominator $6$:
+	$$
+	\left( -\tfrac{25}{6},\ -\tfrac{16}{6},\ -\tfrac{4}{6},\ \tfrac{11}{6},\ \tfrac{14}{6},\ \tfrac{20}{6} \right)
+	\qquad\text{(they sum to } 0 \text{, as they must)}
+	$$
+	For $\mathcal{S}_2$:
+	$$
+	(-5,\ -3,\ -1,\ 1,\ 3,\ 5)
+	$$
+
+	\paragraph{Variances}\mbox{}
+	$$
+	s_1^2 = \frac{1}{5} \cdot \frac{25^2 + 16^2 + 4^2 + 11^2 + 14^2 + 20^2}{36}
+	= \frac{1}{5} \cdot \frac{1614}{36}
+	= \frac{269}{30} \approx 8.967
+	$$
+	$$
+	s_2^2 = \frac{25 + 9 + 1 + 1 + 9 + 25}{5} = \frac{70}{5} = 14
+	$$
+
+	\paragraph{Covariance}\mbox{}
+	$$
+	\Cov(\mathcal{S}_1, \mathcal{S}_2)
+	= \frac{1}{5} \cdot \frac{(-25)(-5) + (-16)(-3) + (-4)(-1) + (11)(1) + (14)(3) + (20)(5)}{6}
+	= \frac{1}{5} \cdot \frac{330}{6}
+	= 11
+	$$
+
+	\paragraph{Standardized sets}\mbox{}
+
+	Standardizing means $\hat{x}_i = (x_i - \bar{x}) / s$, with $s_1 = \sqrt{269/30} \approx 2.9944$ and $s_2 = \sqrt{14} \approx 3.7417$:
+	$$
+	\hat{\mathcal{S}_1} \approx \{ -1.391,\ -0.890,\ -0.223,\ 0.612,\ 0.779,\ 1.113 \}
+	$$
+	$$
+	\hat{\mathcal{S}_2} \approx \{ -1.336,\ -0.802,\ -0.267,\ 0.267,\ 0.802,\ 1.336 \}
+	$$
+	Both now have mean $0$ and variance $1$.
+
+	\paragraph{Covariance of the standardized sets}\mbox{}
+
+	Do \emph{not} recompute a covariance from the decimals above.
+	Standardizing is an affine map, and covariance is bilinear, so
+	$$
+	\Cov\!\left(\hat{\mathcal{S}_1}, \hat{\mathcal{S}_2}\right)
+	= \Cov\!\left( \frac{\mathcal{S}_1 - \bar{x}_1}{s_1}, \frac{\mathcal{S}_2 - \bar{x}_2}{s_2} \right)
+	= \frac{\Cov(\mathcal{S}_1, \mathcal{S}_2)}{s_1 s_2}
+	= \frac{11}{\sqrt{\frac{269}{30}} \sqrt{14}}
+	= \frac{11}{\sqrt{\frac{3766}{30}}}
+	\approx 0.982
+	$$
+
+	\paragraph{What do we remark?}\mbox{}
+
+	The covariance of the standardized data is exactly the \textbf{correlation coefficient} $\rho$ of the original data.
+	Three consequences are worth remembering:
+	\begin{itemize}
+		\item It is dimensionless.
+		The raw covariance $11$ is measured in (units of $\mathcal{S}_1$) $\times$ (units of $\mathcal{S}_2$), so its size tells you nothing on its own, whereas $0.982$ does.
+		\item It always lies in $[-1, 1]$, by Cauchy-Schwarz.
+		A value of $0.982$ says the two sets are very nearly proportional to each other.
+		\item Consequently, \textbf{the covariance matrix of standardized data is the correlation matrix of the raw data}, with ones on the diagonal.
+		This is the fact that does all the work in Section 3.
+	\end{itemize}
+
+	\begin{simplify}
+		The only step here that a calculator is really needed for is $\sqrt{269/30}$, and the ugliness comes from $\bar{x}_1 = 17/3$ not being an integer.
+		Two ways around it.
+		(i) Never compute $\hat{\mathcal{S}_1}$ and $\hat{\mathcal{S}_2}$ numerically at all: as shown above the last question only needs $\Cov / (s_1 s_2)$, so the square roots appear once, at the very end.
+		(ii) If you want an all-integer version to practise on, replace $\mathcal{S}_1$ by $\{1, 4, 5, 7, 8, 11\}$: the mean is then exactly $6$, the deviations are $(-5, -2, -1, 1, 2, 5)$, and $s_1^2 = 12$, $\Cov = 12.8$, $\rho \approx 0.988$.
+		Every qualitative conclusion is unchanged.
+		Also recall that variance and covariance are unchanged by shifting the data, so you may subtract any convenient constant before starting.
+	\end{simplify}
+
+	\section{Principal Component Analysis}
+
+	\textit{(There are $6$ points, so $n = 6$ and we divide by $n - 1 = 5$.)}
+
+	\paragraph{The guess}\mbox{}
+
+	Before any computation, the left plot shows the six points lying on a perfect straight line, and indeed $x_2 = -0.2\,x_1$ for every point.
+	Feature $x_2$ therefore carries \emph{no} information that $x_1$ does not already carry.
+	The only genuinely new information in the dataset is $x_3$: it is the sole coordinate that separates $C$ from $D$.
+	So we should expect one direction inside the $(x_1, x_2)$ plane to dominate, the $x_3$ direction to come second, and a third direction carrying strictly nothing.
+	The computation below confirms exactly this.
+
+	\subsection{Standardization *}
+
+	Arrange the data as a $6 \times 3$ matrix, one row per point.
+	Column means:
+	$$
+	\bar{x}_1 = \frac{2 + 4 + 12 + 12 + 14 + 16}{6} = \frac{60}{6} = 10,
+	\quad
+	\bar{x}_2 = \frac{-12}{6} = -2,
+	\quad
+	\bar{x}_3 = \frac{0}{6} = 0
+	$$
+	Centered data (subtract the means):
+	$$
+	X_c =
+	\begin{pmatrix}
+		-8 & 1.6 & 0.1 \\
+		-6 & 1.2 & -0.1 \\
+		2 & -0.4 & -0.5 \\
+		2 & -0.4 & 0.5 \\
+		4 & -0.8 & -0.1 \\
+		6 & -1.2 & 0.1
+	\end{pmatrix}
+	$$
+	Note immediately that the second column is $-0.2$ times the first.
+	Sums of squared deviations, then variances:
+	$$
+	\textstyle\sum (x_1 - \bar{x}_1)^2 = 64 + 36 + 4 + 4 + 16 + 36 = 160
+	\quad\Rightarrow\quad
+	s_1^2 = \frac{160}{5} = 32,
+	\quad s_1 = 4\sqrt{2} \approx 5.657
+	$$
+	$$
+	\textstyle\sum (x_2 - \bar{x}_2)^2 = (0.2)^2 \times 160 = 6.4
+	\quad\Rightarrow\quad
+	s_2^2 = \frac{6.4}{5} = 1.28,
+	\quad s_2 = 0.2 \times 4\sqrt{2} \approx 1.131
+	$$
+	$$
+	\textstyle\sum (x_3 - \bar{x}_3)^2 = 0.01 + 0.01 + 0.25 + 0.25 + 0.01 + 0.01 = 0.54
+	\quad\Rightarrow\quad
+	s_3^2 = \frac{0.54}{5} = 0.108,
+	\quad s_3 = \frac{3\sqrt{30}}{50} \approx 0.3286
+	$$
+	Dividing each column of $X_c$ by its standard deviation:
+	$$
+	\hat{\mathcal{S}} = Z =
+	\begin{pmatrix}
+		-\sqrt{2} & \sqrt{2} & \frac{\sqrt{30}}{18} \\[2pt]
+		-\frac{3\sqrt{2}}{4} & \frac{3\sqrt{2}}{4} & -\frac{\sqrt{30}}{18} \\[2pt]
+		\frac{\sqrt{2}}{4} & -\frac{\sqrt{2}}{4} & -\frac{5\sqrt{30}}{18} \\[2pt]
+		\frac{\sqrt{2}}{4} & -\frac{\sqrt{2}}{4} & \frac{5\sqrt{30}}{18} \\[2pt]
+		\frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} & -\frac{\sqrt{30}}{18} \\[2pt]
+		\frac{3\sqrt{2}}{4} & -\frac{3\sqrt{2}}{4} & \frac{\sqrt{30}}{18}
+	\end{pmatrix}
+	\approx
+	\begin{pmatrix}
+		-1.414 & 1.414 & 0.304 \\
+		-1.061 & 1.061 & -0.304 \\
+		0.354 & -0.354 & -1.521 \\
+		0.354 & -0.354 & 1.521 \\
+		0.707 & -0.707 & -0.304 \\
+		1.061 & -1.061 & 0.304
+	\end{pmatrix}
+	$$
+	The second column is now exactly the opposite of the first, which is the standardized form of the relation $x_2 = -0.2 x_1$.
+
+	\begin{simplify}
+		These irrational entries are unpleasant, and the good news is that \textbf{you never need them}.
+		Sections 3.2 to 3.5 can all be done from the centered data $X_c$ and the three standard deviations, using $\Cov(\hat{x}_i, \hat{x}_j) = \Cov(x_i, x_j) / (s_i s_j)$ from Section 2.
+		Keep $\hat{\mathcal{S}}$ in the symbolic form above, or skip it entirely, and never convert to decimals until the final plot.
+	\end{simplify}
+
+	\subsection{Covariance matrix *}
+
+	First the covariances of the \emph{raw} features, using the centered columns:
+	$$
+	\Cov(x_1, x_2) = \frac{1}{5} \sum (x_1 - \bar{x}_1)(x_2 - \bar{x}_2)
+	= \frac{1}{5} \times (-0.2) \times 160 = -6.4
+	$$
+	$$
+	\Cov(x_1, x_3) = \frac{(-8)(0.1) + (-6)(-0.1) + (2)(-0.5) + (2)(0.5) + (4)(-0.1) + (6)(0.1)}{5}
+	$$
+	$$
+	\Cov(x_1, x_3) = \frac{-0.8 + 0.6 - 1 + 1 - 0.4 + 0.6}{5} = 0
+	$$
+	$$
+	\Cov(x_2, x_3) = -0.2 \times \Cov(x_1, x_3) = 0
+	$$
+	so that
+	$$
+	\Sigma_{\text{raw}} =
+	\begin{pmatrix}
+		32 & -6.4 & 0 \\
+		-6.4 & 1.28 & 0 \\
+		0 & 0 & 0.108
+	\end{pmatrix}
+	$$
+	Now divide entry $(i,j)$ by $s_i s_j$ to get the covariance matrix of the standardized data:
+	$$
+	\Cov(\hat{x}_1, \hat{x}_2) = \frac{-6.4}{4\sqrt{2} \times 0.8\sqrt{2}} = \frac{-6.4}{6.4} = -1,
+	\qquad
+	\Cov(\hat{x}_1, \hat{x}_3) = \Cov(\hat{x}_2, \hat{x}_3) = 0
+	$$
+	and the diagonal is $1$ by construction.
+	Hence the matrix we work with is the correlation matrix:
+	$$
+	C =
+	\begin{pmatrix}
+		1 & -1 & 0 \\
+		-1 & 1 & 0 \\
+		0 & 0 & 1
+	\end{pmatrix}
+	$$
+	The value $-1$ is the algebraic statement of what the left plot showed: $x_1$ and $x_2$ are perfectly anti-correlated, and $C$ is singular.
+
+	\subsection{Eigenvalues of the covariance matrix *}
+
+	$C$ is block-diagonal, so the characteristic polynomial factors immediately:
+	$$
+	\det(C - \lambda I)
+	= \det \begin{pmatrix} 1-\lambda & -1 \\ -1 & 1-\lambda \end{pmatrix} \times (1 - \lambda)
+	= \left[ (1-\lambda)^2 - 1 \right](1 - \lambda)
+	= (\lambda^2 - 2\lambda)(1 - \lambda)
+	$$
+	$$
+	\det(C - \lambda I) = -\lambda(\lambda - 2)(\lambda - 1) = 0
+	\quad\Longrightarrow\quad
+	\lambda_1 = 2, \quad \lambda_2 = 1, \quad \lambda_3 = 0
+	$$
+	Check: the eigenvalues sum to $3 = \operatorname{tr}(C)$, and $\lambda_3 = 0$ because $C$ is singular.
+	Explained variance:
+	$$
+	\frac{\lambda_1}{\lambda_1 + \lambda_2 + \lambda_3} = \frac{2}{3} \approx 66.7\%,
+	\qquad
+	\frac{\lambda_2}{3} = \frac{1}{3} \approx 33.3\%,
+	\qquad
+	\frac{\lambda_3}{3} = 0\%
+	$$
+	Ordered by decreasing importance: the first component carries two thirds of the variability, the second one third, and the third carries nothing at all.
+	The dataset, although given in $\R^3$, really lives in a plane.
+
+	\subsection{Feature vectors (the ``principal components'') *}
+
+	\paragraph{$\lambda_1 = 2$}\mbox{}
+	$$
+	(C - 2I)\mathbf{u} =
+	\begin{pmatrix}
+		-1 & -1 & 0 \\
+		-1 & -1 & 0 \\
+		0 & 0 & -1
+	\end{pmatrix}
+	\begin{pmatrix} u_1 \\ u_2 \\ u_3 \end{pmatrix} = \mathbf{0}
+	\quad\Longleftrightarrow\quad
+	\begin{cases} u_1 + u_2 = 0 \\ u_3 = 0 \end{cases}
+	$$
+	$$
+	\mathbf{u}_1 = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ -1 \\ 0 \end{pmatrix}
+	$$
+
+	\paragraph{$\lambda_2 = 1$}\mbox{}
+	$$
+	(C - I)\mathbf{u} =
+	\begin{pmatrix}
+		0 & -1 & 0 \\
+		-1 & 0 & 0 \\
+		0 & 0 & 0
+	\end{pmatrix}
+	\mathbf{u} = \mathbf{0}
+	\quad\Longleftrightarrow\quad
+	u_1 = u_2 = 0
+	\qquad\Longrightarrow\qquad
+	\mathbf{u}_2 = \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix}
+	$$
+
+	\paragraph{$\lambda_3 = 0$}\mbox{}
+	$$
+	C\mathbf{u} = \mathbf{0}
+	\quad\Longleftrightarrow\quad
+	\begin{cases} u_1 - u_2 = 0 \\ u_3 = 0 \end{cases}
+	\qquad\Longrightarrow\qquad
+	\mathbf{u}_3 = \frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ 1 \\ 0 \end{pmatrix}
+	$$
+
+	The three are pairwise orthogonal, as they must be for a symmetric matrix with distinct eigenvalues.
+	Their interpretation is pleasant:
+	$\mathbf{u}_1$ is ``$\hat{x}_1$ goes up while $\hat{x}_2$ goes down'', the direction along which the six points are spread out;
+	$\mathbf{u}_2$ is the $x_3$ axis, untouched because $x_3$ is uncorrelated with the other two;
+	and $\mathbf{u}_3$ is ``$\hat{x}_1$ and $\hat{x}_2$ go up together'', which never happens in this dataset, hence $\lambda_3 = 0$.
+
+	\subsection{Recasting data on principal components axes *}
+
+	Projecting means multiplying the standardized data by each feature vector.
+	Because the second column of $Z$ is the opposite of the first, we get for the first component
+	$$
+	Z \mathbf{u}_1 = \frac{\hat{x}_1 - \hat{x}_2}{\sqrt{2}} = \frac{2\hat{x}_1}{\sqrt{2}} = \sqrt{2}\,\hat{x}_1
+	= \sqrt{2} \times \frac{x_1 - 10}{4\sqrt{2}} = \frac{x_1 - 10}{4}
+	$$
+	which is a whole number of quarters, no square roots left.
+	The second component is just $Z\mathbf{u}_2 = \hat{x}_3$, and the third is $Z \mathbf{u}_3 = (\hat{x}_1 + \hat{x}_2)/\sqrt{2} = 0$ for every point.
+	$$
+	\begin{array}{c|rrr}
+		& \text{PC}_1 & \text{PC}_2 & \text{PC}_3 \\ \hline
+		A & -2.0 & 0.304 & 0 \\
+		B & -1.5 & -0.304 & 0 \\
+		C & 0.5 & -1.521 & 0 \\
+		D & 0.5 & 1.521 & 0 \\
+		E & 1.0 & -0.304 & 0 \\
+		F & 1.5 & 0.304 & 0
+	\end{array}
+	$$
+	Check: the variance of the first column is $\frac{4 + 2.25 + 0.25 + 0.25 + 1 + 2.25}{5} = \frac{10}{5} = 2 = \lambda_1$, and the variance of the second is $\frac{5}{5} = 1 = \lambda_2$, as promised.
+	The third column is identically zero, so \textbf{nothing at all is lost by dropping the third component}: the two-dimensional plot below is a faithful, complete representation of the original three-dimensional data.
+
+	\begin{center}
+		\begin{tikzpicture}[xscale=2.0,yscale=1.35]
+			\draw[->] (-2.5,0) -- (2.2,0) node[right] {\scriptsize $\text{PC}_1$};
+			\draw[->] (0,-1.9) -- (0,1.9) node[above] {\scriptsize $\text{PC}_2$};
+			\foreach \t in {-2,-1,1,2}{ \draw (\t,0.06) -- (\t,-0.06) node[below] {\scriptsize $\t$}; }
+			\foreach \t in {-1,1}{ \draw (0.04,\t) -- (-0.04,\t) node[left] {\scriptsize $\t$}; }
+			\foreach \px/\py/\lb in {-2/0.304/A,-1.5/-0.304/B,0.5/-1.521/C,0.5/1.521/D,1/-0.304/E,1.5/0.304/F}{
+				\node[circle,fill,minimum size=4pt,inner sep=0] at ({\px},{\py}) {};
+				\node[above right] at ({\px},{\py}) {\scriptsize \lb};
+			}
+		\end{tikzpicture}
+	\end{center}
+	\textit{The six points in the plane of the first two principal components.
+	$C$ and $D$, which were indistinguishable on the original $(x_1, x_2)$ plot, are now the two most widely separated points along $\text{PC}_2$.}
+
+	\subsection{Importance of standardization}
+
+	Redo the same steps starting from $\Sigma_{\text{raw}}$ instead of $C$.
+
+	\paragraph{Eigenvalues}\mbox{}
+
+	The matrix is again block-diagonal, and the top-left block is singular, since $32 \times 1.28 - (-6.4)^2 = 40.96 - 40.96 = 0$.
+	A $2\times2$ matrix with determinant $0$ has eigenvalues $0$ and its trace, so the block gives $0$ and $32 + 1.28 = 33.28$, and the last diagonal entry gives $0.108$:
+	$$
+	\lambda_1 = 33.28, \qquad \lambda_2 = 0.108, \qquad \lambda_3 = 0,
+	\qquad \text{total } 33.388
+	$$
+	$$
+	\frac{33.28}{33.388} \approx 99.68\%,
+	\qquad
+	\frac{0.108}{33.388} \approx 0.32\%,
+	\qquad
+	0\%
+	$$
+
+	\paragraph{Feature vectors}\mbox{}
+
+	For $\lambda_1 = 33.28$, the first row of $\Sigma_{\text{raw}} - \lambda_1 I$ reads $-1.28\,u_1 - 6.4\,u_2 = 0$, that is $u_1 = -5u_2$:
+	$$
+	\mathbf{u}_1 = \frac{1}{\sqrt{26}}\begin{pmatrix} 5 \\ -1 \\ 0 \end{pmatrix},
+	\qquad
+	\mathbf{u}_2 = \begin{pmatrix} 0 \\ 0 \\ 1 \end{pmatrix},
+	\qquad
+	\mathbf{u}_3 = \frac{1}{\sqrt{26}}\begin{pmatrix} 1 \\ 5 \\ 0 \end{pmatrix}
+	$$
+
+	\paragraph{Projections}\mbox{}
+
+	Projecting the \emph{centered but unscaled} data:
+	$$
+	X_c \mathbf{u}_1 = \frac{5(x_1 - 10) - (x_2 + 2)}{\sqrt{26}} = \frac{5.2\,(x_1 - 10)}{\sqrt{26}} \approx 1.020\,(x_1 - 10)
+	$$
+	$$
+	\begin{array}{c|rr}
+		& \text{PC}_1 & \text{PC}_2 \\ \hline
+		A & -8.16 & 0.1 \\
+		B & -6.12 & -0.1 \\
+		C & 2.04 & -0.5 \\
+		D & 2.04 & 0.5 \\
+		E & 4.08 & -0.1 \\
+		F & 6.12 & 0.1
+	\end{array}
+	$$
+
+	\paragraph{Conclusion}\mbox{}
+
+	The two analyses give the same \emph{directions} but wildly different \emph{importances}:
+	\begin{itemize}
+		\item Without standardization, the first component absorbs $99.68\%$ of the variance and is essentially the $x_1$ axis.
+		The reason has nothing to do with structure in the data: $x_1$ simply happens to be recorded in units that make its numbers large.
+		Multiply $x_1$ by $1000$ (say, measure it in grams instead of kilograms) and its share would rise to $99.9999\%$.
+		\item In that unstandardized view, $x_3$ looks like negligible noise at $0.32\%$, and a practitioner reading a scree plot would discard it without hesitation.
+		Yet $x_3$ is the only feature carrying independent information, the only thing distinguishing $C$ from $D$.
+		Discarding it destroys the dataset, while discarding $x_2$, which appears important, costs nothing.
+		\item After standardization every feature starts on equal footing, and the answer becomes honest: two thirds for the $x_1/x_2$ direction, one third for $x_3$, zero for the redundant direction.
+	\end{itemize}
+	The moral: PCA maximizes variance, and variance depends on units.
+	Standardize whenever the features are not measured in comparable units, which in practice is almost always.
+
+	\begin{simplify}
+		Three tricks make the whole of Section 3 a pen-and-paper exercise.
+		(i) Spot the exact linear relation $x_2 = -0.2 x_1$ at the start.
+		It tells you before any computation that the correlation is $-1$, that the covariance matrix is singular, and that one eigenvalue is $0$.
+		(ii) Use $\Cov(\hat{x}_i, \hat{x}_j) = \Cov(x_i, x_j)/(s_i s_j)$ so that the irrational standard deviations cancel and the correlation matrix comes out with entries $0$ and $\pm 1$.
+		(iii) Exploit the block structure: a matrix of the form $\left(\begin{smallmatrix} a & b & 0 \\ b & c & 0 \\ 0 & 0 & d \end{smallmatrix}\right)$ has $d$ as an eigenvalue for free, and the remaining $2\times2$ block has characteristic polynomial $\lambda^2 - (a+c)\lambda + (ac - b^2)$, so no cubic ever needs to be solved.
+		If you want to avoid decimals entirely, rescale $x_3$ by a factor $10$ before starting.
+		Standardization removes any scale factor, so the standardized answers of Sections 3.1 to 3.5 are strictly unchanged.
+	\end{simplify}
+
+	\section{Principal Component Analysis with Python}
+
+	See \texttt{NotebookPCA\_solutions.ipynb} in this folder (a PDF export, \texttt{NotebookPCA\_solutions.pdf}, is provided as well).
+
+\end{document}
