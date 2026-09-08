@@ -37,6 +37,7 @@ The order of the sessions may change according to the students convenience.
 - Session 6: Differential Equations
     - [Notes](SessionDifferentialEquations/NotesDifferentialEquations.pdf)
     - [Problem Set](SessionDifferentialEquations/ExercisesDifferentialEquations.pdf)
+    - [Solutions](SessionDifferentialEquations/ExercisesDifferentialEquations-Solutions.pdf)
 - Session 7: Constrained Optimization
     - [Notes](SessionConstrainedOptimization/NotesConstrainedOptimization.pdf)
     - [Problem Set](SessionConstrainedOptimization/ExercisesConstrainedOptimization.pdf)
