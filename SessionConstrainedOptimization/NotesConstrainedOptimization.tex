@@ -402,6 +402,70 @@
 	f\left(\frac{1}{2}, \frac{1}{2}\right) = \left(\frac{1}{2}\right)^2 + \left(\frac{1}{2}\right)^2 = \frac{1}{4} + \frac{1}{4} = \frac{1}{2}
 	$$
 	Thus, the minimum value of $f(x, y) = x^2 + y^2$ subject to $x + y = 1$ is $\frac{1}{2}$ at the point $\left(\frac{1}{2}, \frac{1}{2}\right)$.
+
+	\textbf{Example:}
+	A Less Friendly Constraint\\
+	Find the extreme values of $f(x, y) = x + y$ on the ellipse
+	$$
+	\frac{x^2}{4} + y^2 = 1
+	$$
+	Here the substitution method is already painful: solving the constraint gives $y = \pm\sqrt{1 - \frac{x^2}{4}}$, that is two branches, each carrying a square root that we would then have to differentiate and discuss separately.
+	The Lagrangian does not care.
+
+	\textbf{Step 1: Construct the Lagrange Function}\\
+	With $g(x, y) = \frac{x^2}{4} + y^2 - 1$, the Lagrangian is:
+	$$
+	\mathcal{L}(x, y, \lambda) = x + y - \lambda \left( \frac{x^2}{4} + y^2 - 1 \right)
+	$$
+
+	\textbf{Step 2: Compute the Partial Derivatives}\\
+	$$
+	\frac{\partial \mathcal{L}}{\partial x} = 1 - \lambda \frac{x}{2} = 0,
+	\quad
+	\frac{\partial \mathcal{L}}{\partial y} = 1 - 2 \lambda y = 0,
+	\quad
+	\frac{\partial \mathcal{L}}{\partial \lambda} = -\left( \frac{x^2}{4} + y^2 - 1 \right) = 0
+	$$
+
+	\textbf{Step 3: Solve the System of Equations}\\
+	The first two equations force $\lambda \neq 0$ (with $\lambda = 0$ they would read $1 = 0$), so we may divide by it:
+	$$
+	x = \frac{2}{\lambda}
+	\qquad \text{and} \qquad
+	y = \frac{1}{2\lambda}
+	$$
+	Note that this is the whole point of the method: instead of eliminating $y$ against a square root, we have expressed \textit{both} unknowns in terms of the single multiplier.
+	Substituting them into the third equation (the constraint) leaves one equation in $\lambda$ alone:
+	$$
+	\frac{1}{4} \cdot \frac{4}{\lambda^2} + \frac{1}{4 \lambda^2} = 1
+	\qquad \Longleftrightarrow \qquad
+	\frac{5}{4 \lambda^2} = 1
+	\qquad \Longleftrightarrow \qquad
+	\lambda = \pm \frac{\sqrt{5}}{2}
+	$$
+
+	\textbf{Step 4: Determine the Optimal Points}\\
+	Each sign gives one stationary point:
+	$$
+	\lambda = \frac{\sqrt{5}}{2}
+	\ \longrightarrow \
+	\left( \frac{4}{\sqrt{5}}, \frac{1}{\sqrt{5}} \right),
+	\qquad
+	\lambda = -\frac{\sqrt{5}}{2}
+	\ \longrightarrow \
+	\left( -\frac{4}{\sqrt{5}}, -\frac{1}{\sqrt{5}} \right)
+	$$
+	Both satisfy the constraint, as $\frac{16/5}{4} + \frac{1}{5} = \frac{4}{5} + \frac{1}{5} = 1$.
+	The method stops here: it has produced two candidates without saying which is which, so we compare the values of $f$:
+	$$
+	f\left( \frac{4}{\sqrt{5}}, \frac{1}{\sqrt{5}} \right) = \frac{5}{\sqrt{5}} = \sqrt{5},
+	\qquad
+	f\left( -\frac{4}{\sqrt{5}}, -\frac{1}{\sqrt{5}} \right) = -\sqrt{5}
+	$$
+	So the maximum of $f$ on the ellipse is $\sqrt{5}$ and the minimum is $-\sqrt{5}$.
+
+	Geometrically, the level curves of $f$ are the lines $x + y = c$.
+	Sliding such a line across the plane, the extreme values of $c$ are those for which the line still touches the ellipse, and the two tangency points are exactly the two solutions found above.
 	
 	\subsection{Inequality Constrained Optimization}
 	Inequality constrained optimization problems can be expressed as:
@@ -631,5 +695,110 @@
 	Substitute $x = \frac{1}{2}$, $y = \frac{1}{2}$ into the original function:
 	$f\left(\frac{1}{2}, \frac{1}{2}\right) = \frac{1}{2}$.
 	Thus, the minimum value of $f(x, y) = x^2 + y^2$ subject to $x + y \geq 1$ is $\frac{1}{2}$ at the point $\left(\frac{1}{2}, \frac{1}{2}\right)$.
+
+	\textbf{Example:}
+	Two Inequality Constraints\\
+	Minimize
+	$$
+	f(x, y) = (x-3)^2 + (y-2)^2
+	\qquad \text{subject to} \qquad
+	x + y \leq 4
+	\quad \text{and} \quad
+	x \geq 0
+	$$
+	In words: find the allowed point closest to the target $(3,2)$.
+	This time there are two constraints, so there are two multipliers and two slack variables, and the case analysis becomes the real work.
+
+	\textbf{Step 1: Write the Constraints in the Standard Form}\\
+	Our convention is $g_i \geq 0$, so we set:
+	$$
+	g_1(x, y) = 4 - x - y \geq 0
+	\qquad \text{and} \qquad
+	g_2(x, y) = x \geq 0
+	$$
+
+	\textbf{Step 2: Construct the Lagrange Function}\\
+	With one slack variable per constraint:
+	$$
+	\mathcal{L}(x, y, s_1, s_2, \lambda_1, \lambda_2)
+	= (x-3)^2 + (y-2)^2
+	- \lambda_1 \left( 4 - x - y - s_1^2 \right)
+	- \lambda_2 \left( x - s_2^2 \right)
+	$$
+
+	\textbf{Step 3: Compute the Partial Derivatives}\\
+	$$
+	\frac{\partial \mathcal{L}}{\partial x} = 2(x-3) + \lambda_1 - \lambda_2 = 0,
+	\qquad
+	\frac{\partial \mathcal{L}}{\partial y} = 2(y-2) + \lambda_1 = 0
+	$$
+	$$
+	\frac{\partial \mathcal{L}}{\partial s_1} = 2 \lambda_1 s_1 = 0,
+	\qquad
+	\frac{\partial \mathcal{L}}{\partial s_2} = 2 \lambda_2 s_2 = 0
+	$$
+	$$
+	\frac{\partial \mathcal{L}}{\partial \lambda_1} = -\left( 4 - x - y - s_1^2 \right) = 0,
+	\qquad
+	\frac{\partial \mathcal{L}}{\partial \lambda_2} = -\left( x - s_2^2 \right) = 0
+	$$
+
+	\textbf{Step 4: Solve the System of Equations}\\
+	Each of the two products $\lambda_i s_i = 0$ offers two possibilities, which leaves $2 \times 2 = 4$ cases to examine.
+	Remember that $s_i = 0$ means "constraint $i$ active" and $\lambda_i = 0$ means "constraint $i$ inactive".
+
+	\begin{enumerate}
+		\item $\lambda_1 = 0$ and $\lambda_2 = 0$ (no constraint doing any work).
+		The first two equations become $2(x-3) = 0$ and $2(y-2) = 0$, giving the unconstrained minimum $(3,2)$.
+		But then $g_1 = 4 - 3 - 2 = -1 < 0$: the point is not allowed.
+		The slack variable says the same thing, as $s_1^2 = 4 - x - y = -1$ has no real solution.
+		This case is rejected.
+
+		\item $s_1 = 0$ and $\lambda_2 = 0$ (only $x + y \leq 4$ active).
+		Subtracting the second equation from the first (with $\lambda_2 = 0$) eliminates $\lambda_1$:
+		$$
+		2(x-3) = 2(y-2)
+		\qquad \Longleftrightarrow \qquad
+		x = y + 1
+		$$
+		Together with $s_1 = 0$, that is $x + y = 4$, this gives $y = \frac{3}{2}$ and $x = \frac{5}{2}$.
+		The multipliers are $\lambda_1 = -2(y-2) = 1 \geq 0$ and $\lambda_2 = 0$, and the second constraint holds, as $x = \frac{5}{2} \geq 0$.
+		Everything checks out, so this candidate is kept.
+
+		\item $\lambda_1 = 0$ and $s_2 = 0$ (only $x \geq 0$ active).
+		Here $x = 0$ and the second equation gives $y = 2$, a point which is indeed allowed ($g_1 = 2 \geq 0$).
+		The first equation, however, gives:
+		$$
+		2(0-3) - \lambda_2 = 0
+		\qquad \Longleftrightarrow \qquad
+		\lambda_2 = -6 < 0
+		$$
+		The sign condition fails, so this case is rejected.
+		Geometrically, the constraint $x \geq 0$ is pushing the point outwards rather than holding it back: from $(0,2)$ we can move to the right, stay allowed, and get closer to $(3,2)$.
+
+		\item $s_1 = 0$ and $s_2 = 0$ (both constraints active).
+		Then $x = 0$ and $x + y = 4$, so the point is the corner $(0,4)$.
+		The second equation gives:
+		$$
+		2(4-2) + \lambda_1 = 0
+		\qquad \Longleftrightarrow \qquad
+		\lambda_1 = -4 < 0
+		$$
+		The sign condition fails again, and the case is rejected.
+	\end{enumerate}
+
+	\textbf{Step 5: Determine the Optimal Point}\\
+	Only one case survived, so the minimum is:
+	$$
+	f\left( \frac{5}{2}, \frac{3}{2} \right)
+	= \left( -\frac{1}{2} \right)^2 + \left( -\frac{1}{2} \right)^2
+	= \frac{1}{2}
+	$$
+	Thus, the closest allowed point to $(3,2)$ is $\left( \frac{5}{2}, \frac{3}{2} \right)$, at squared distance $\frac{1}{2}$.
+
+	Note what the two multipliers tell us.
+	The first one, $\lambda_1 = 1 > 0$, says that $x + y \leq 4$ is active and genuinely holding the solution back (relaxing it would improve $f$).
+	The second one, $\lambda_2 = 0$, says that $x \geq 0$ is inactive: the optimum would be exactly the same if we had never written that constraint.
+	This is complementary slackness at work, and it is what makes the case analysis worth the trouble: the method finds \textit{by itself} which constraints matter.
 	
 \end{document}
