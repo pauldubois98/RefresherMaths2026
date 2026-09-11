@@ -51,6 +51,7 @@
 	\subsection{Direct Calculation Method}
 	The direct method involves taking the derivative of the function with respect to each variable, setting these derivatives equal to zero, and solving the resulting system of equations.
 	
+	\vspace{1cm}
 	\textbf{Example:}
 	\noindent\\
 	Consider the function $f(x, y) = x^2 + y^2$. To find the minimum, we calculate:
@@ -86,6 +87,7 @@
 	\subsubsection{Direct Calculation Method}
 	For some simple problems, we can solve the constraint explicitly and substitute it back into the objective function to reduce the problem to an unconstrained optimization problem.
 	
+	\vspace{1cm}
 	\textbf{Example:}
 	Minimize $f(x, y) = x^2 + y^2$ subject to the constraint $x + y = 1$.
 	\\
@@ -324,7 +326,8 @@
 	You stop descending exactly when the constraint curve stops crossing the level curves and \textit{touches} one instead, that is, when the two curves are \textbf{tangent}.
 	Two curves are tangent exactly when their normals are parallel, i.e. when $\nabla f = \lambda \nabla g$.
 
-	\noindent \textbf{Example:}
+	\vspace{1cm}
+	\textbf{Example:}
 	For $f(x,y) = x^2+y^2$ with the constraint $g(x,y) = x + y - 1 = 0$:
 	$$
 	\nabla f = \begin{pmatrix} 2x \\ 2y \end{pmatrix}
@@ -377,6 +380,7 @@
 	$$
 	which is precisely $\nabla_\mathbf{x} \mathcal{L} = \mathbf{0}$ for the Lagrangian written above, with one multiplier per constraint.
 
+	\vspace{1cm}
 	\textbf{Example:}
 	Minimize $f(x, y) = x^2 + y^2$ subject to $x + y = 1$.
 
@@ -403,6 +407,7 @@
 	$$
 	Thus, the minimum value of $f(x, y) = x^2 + y^2$ subject to $x + y = 1$ is $\frac{1}{2}$ at the point $\left(\frac{1}{2}, \frac{1}{2}\right)$.
 
+	\vspace{1cm}
 	\textbf{Example:}
 	A Less Friendly Constraint\\
 	Find the extreme values of $f(x, y) = x + y$ on the ellipse
@@ -466,6 +471,62 @@
 
 	Geometrically, the level curves of $f$ are the lines $x + y = c$.
 	Sliding such a line across the plane, the extreme values of $c$ are those for which the line still touches the ellipse, and the two tangency points are exactly the two solutions found above.
+
+	\vspace{1cm}
+	\textbf{Example:}
+	Fitting Probabilities to Counts\\
+	An experiment with three possible outcomes is repeated $n$ times, outcome $i$ being observed $n_i$ times, so that $n_1 + n_2 + n_3 = n$.
+	We look for the probabilities $p_1, p_2, p_3$ that make what we observed as likely as possible.
+	The probability of observing exactly these counts is proportional to $p_1^{n_1} p_2^{n_2} p_3^{n_3}$, and, as always with products, it is more comfortable to work with the logarithm.
+	Maximizing the likelihood is therefore the same as minimizing:
+	$$
+	f(p_1, p_2, p_3) = - \left( n_1 \ln p_1 + n_2 \ln p_2 + n_3 \ln p_3 \right)
+	\quad \text{subject to} \quad
+	p_1 + p_2 + p_3 = 1
+	$$
+	The constraint is there because probabilities must sum to $1$, and the logarithms confine us to $p_i > 0$ by themselves.
+
+	\textbf{Step 1: Construct the Lagrange Function}\\
+	$$
+	\mathcal{L}(p_1, p_2, p_3, \lambda)
+	= - \sum_{i=1}^3 n_i \ln p_i - \lambda \left( p_1 + p_2 + p_3 - 1 \right)
+	$$
+
+	\textbf{Step 2: Compute the Partial Derivatives}\\
+	The three variables play identical roles, so one line covers them all:
+	$$
+	\frac{\partial \mathcal{L}}{\partial p_i} = - \frac{n_i}{p_i} - \lambda = 0
+	\quad \text{for } i = 1, 2, 3,
+	\qquad
+	\frac{\partial \mathcal{L}}{\partial \lambda} = - \left( p_1 + p_2 + p_3 - 1 \right) = 0
+	$$
+
+	\textbf{Step 3: Solve the System of Equations}\\
+	The multiplier cannot be zero (that would force $n_i = 0$), so each of the first three equations gives:
+	$$
+	p_i = - \frac{n_i}{\lambda}
+	$$
+	Once again every unknown is expressed through the single multiplier, and the constraint is what pins $\lambda$ down.
+	Summing the three and using $p_1 + p_2 + p_3 = 1$:
+	$$
+	1 = - \frac{n_1 + n_2 + n_3}{\lambda} = - \frac{n}{\lambda}
+	\qquad \Longleftrightarrow \qquad
+	\lambda = -n
+	$$
+
+	\textbf{Step 4: Determine the Optimal Point}\\
+	Substituting back:
+	$$
+	\boxed{\ p_i = \frac{n_i}{n}\ }
+	$$
+	The best probabilities are simply the observed frequencies, which is reassuring.
+	With $n_1 = 20$, $n_2 = 30$, $n_3 = 50$ (so $n = 100$), we get $p_1 = \frac{1}{5}$, $p_2 = \frac{3}{10}$ and $p_3 = \frac{1}{2}$.
+	That this stationary point is really the minimum follows from convexity, as $-\ln$ is convex and the constraint set is a plane.
+
+	Two remarks are worth making.
+	First, the multiplier came out negative, which is not a problem at all: the sign condition $\lambda \geq 0$ belongs to inequality constraints (Section 2.2), whereas an equality constraint leaves $\lambda$ free.
+	Second, nothing in the computation used the number $3$, so the same three lines give $p_i = \frac{n_i}{n}$ for any number of outcomes.
+	This is the maximum likelihood estimate of a discrete distribution, and the function $f$ we minimized is precisely the cross-entropy loss used when training classifiers.
 	
 	\subsection{Inequality Constrained Optimization}
 	Inequality constrained optimization problems can be expressed as:
@@ -483,6 +544,7 @@
 	When the constraint is active (i.e., it holds as an equality), it can be treated similarly to the equality-constrained case.
 	If inactive, it is ignored.
 	
+	\vspace{1cm}
 	\textbf{Example:}
 	Minimizing a Quadratic Function with an Inequality Constraint
 	\\
@@ -637,6 +699,7 @@
 	$$
 	These are the \textbf{Karush-Kuhn-Tucker (KKT) conditions}, and they are the foundation of most of constrained optimization, including the Support Vector Machines of the Binary Classification session.
 
+	\vspace{1cm}
 	\textbf{Example:}
 	Minimizing a Quadratic Function with an Inequality Constraint\\
 	Consider the problem of minimizing the function $f(x, y) = x^2 + y^2$ subject to the inequality constraint $x + y \geq 1$.
@@ -696,6 +759,7 @@
 	$f\left(\frac{1}{2}, \frac{1}{2}\right) = \frac{1}{2}$.
 	Thus, the minimum value of $f(x, y) = x^2 + y^2$ subject to $x + y \geq 1$ is $\frac{1}{2}$ at the point $\left(\frac{1}{2}, \frac{1}{2}\right)$.
 
+	\vspace{1cm}
 	\textbf{Example:}
 	Two Inequality Constraints\\
 	Minimize
@@ -800,5 +864,93 @@
 	The first one, $\lambda_1 = 1 > 0$, says that $x + y \leq 4$ is active and genuinely holding the solution back (relaxing it would improve $f$).
 	The second one, $\lambda_2 = 0$, says that $x \geq 0$ is inactive: the optimum would be exactly the same if we had never written that constraint.
 	This is complementary slackness at work, and it is what makes the case analysis worth the trouble: the method finds \textit{by itself} which constraints matter.
+
+	\vspace{1cm}
+	\textbf{Example:}
+	An Exponential Objective\\
+	Minimize
+	$$
+	f(x, y) = e^{x} + e^{y}
+	\qquad \text{subject to} \qquad
+	x + 2y \geq 3
+	$$
+	Nothing here is polynomial, so there is no system of polynomial equations to factor.
+	The method is unchanged.
+
+	\textbf{Step 1: Introduce the Slack Variable}\\
+	With $g(x, y) = x + 2y - 3 \geq 0$, the constraint becomes the equality:
+	$$
+	x + 2y - 3 - s^2 = 0
+	$$
+
+	\textbf{Step 2: Construct the Lagrange Function}\\
+	$$
+	\mathcal{L}(x, y, s, \lambda) = e^{x} + e^{y} - \lambda \left( x + 2y - 3 - s^2 \right)
+	$$
+
+	\textbf{Step 3: Compute the Partial Derivatives}\\
+	$$
+	\frac{\partial \mathcal{L}}{\partial x} = e^{x} - \lambda = 0,
+	\qquad
+	\frac{\partial \mathcal{L}}{\partial y} = e^{y} - 2 \lambda = 0
+	$$
+	$$
+	\frac{\partial \mathcal{L}}{\partial s} = 2 \lambda s = 0,
+	\qquad
+	\frac{\partial \mathcal{L}}{\partial \lambda} = -\left( x + 2y - 3 - s^2 \right) = 0
+	$$
+
+	\textbf{Step 4: Solve the System of Equations}\\
+	As before, $2 \lambda s = 0$ splits the problem in two cases.
+
+	\begin{enumerate}
+		\item If $\lambda = 0$, the first equation reads $e^{x} = 0$, which no real $x$ satisfies.
+		The case is impossible, and this is worth a moment of thought: it is the algebra telling us that $f$ has no unconstrained minimum at all.
+		Indeed $e^{x} + e^{y}$ can be made as close to $0$ as we wish by sending $x$ and $y$ to $-\infty$, without ever reaching it.
+		The constraint is what makes the problem well posed, so it \textit{must} be active.
+
+		\item If $s = 0$, the constraint holds as an equality, $x + 2y = 3$.
+		Dividing the second equation by the first eliminates $\lambda$ (legitimately, since exponentials never vanish):
+		$$
+		\frac{e^{y}}{e^{x}} = 2
+		\qquad \Longleftrightarrow \qquad
+		e^{y-x} = 2
+		\qquad \Longleftrightarrow \qquad
+		y = x + \ln 2
+		$$
+		Substituting into the constraint gives one equation in $x$ alone:
+		$$
+		x + 2 \left( x + \ln 2 \right) = 3
+		\quad \Longleftrightarrow \quad
+		3x = 3 - 2 \ln 2
+		\quad \Longleftrightarrow \quad
+		x = 1 - \frac{2}{3} \ln 2
+		$$
+		and therefore:
+		$$
+		y = 1 + \frac{1}{3} \ln 2,
+		\qquad
+		\lambda = e^{x} = e \cdot e^{-\frac{2}{3} \ln 2} = \frac{e}{\sqrt[3]{4}} > 0
+		$$
+		The sign condition holds, so the candidate is kept.
+	\end{enumerate}
+
+	\textbf{Step 5: Determine the Optimal Point}\\
+	Since $e^{y} = 2 e^{x}$, the value of the objective is simply three times $e^x$:
+	$$
+	f(x, y) = e^{x} + e^{y} = 3 e^{x} = \frac{3e}{\sqrt[3]{4}} \approx 5.14
+	$$
+	reached at $x = 1 - \frac{2}{3} \ln 2 \approx 0.54$ and $y = 1 + \frac{1}{3} \ln 2 \approx 1.23$, which does satisfy $x + 2y = 3$.
+	That this stationary point is a minimum and not something else is guaranteed here by convexity: $f$ is a sum of convex functions and the allowed region is a half-plane.
+
+	Finally, the multiplier can be read as a price.
+	Replacing the bound $3$ by a general $b$ and running the same computation gives $3x = b - 2 \ln 2$, hence the minimum value:
+	$$
+	f^*(b) = 3 e^{x} = 3 \, e^{\frac{b - 2 \ln 2}{3}}
+	\qquad \text{so} \qquad
+	\frac{d f^*}{d b} = e^{\frac{b - 2 \ln 2}{3}}
+	$$
+	which, at $b = 3$, is exactly $\frac{e}{\sqrt[3]{4}} = \lambda$.
+	The multiplier measures exactly how much the optimal value degrades when the constraint is tightened by one unit, which is why $\lambda$ is called the \textbf{shadow price} of the constraint.
 	
 \end{document}
