@@ -6,6 +6,8 @@
 \usepackage{amssymb}
 \usepackage{mathrsfs}
 \usepackage{stmaryrd}
+\usepackage{tikz}
+\usetikzlibrary{calc}
 
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\N}{\mathbb{N}}
@@ -131,6 +133,66 @@
 	So $\nabla g$ is perpendicular to every direction in which we may travel while respecting the constraint.
 	In other words, $\nabla g$ is perpendicular to the constraint curve (or surface).
 
+	\begin{center}
+		\begin{minipage}[t]{0.46\textwidth}
+			\centering
+			\vspace{0pt}
+			\begin{tikzpicture}[scale=1.15]
+				% level curves of g; the constraint is the one where g = 0
+				\draw[gray!40] (0,0) ellipse (0.91 and 0.65);
+				\draw[gray!40] (0,0) ellipse (1.19 and 0.85);
+				\draw[very thick] (0,0) ellipse (1.4 and 1.0);
+				\draw[gray!40] (0,0) ellipse (1.61 and 1.15);
+				\draw[gray!40] (0,0) ellipse (1.89 and 1.35);
+				\node[gray!75] at (0,-0.22) {\scriptsize $g<0$};
+				\node[gray!75] at (-1.5,-1.35) {\scriptsize $g>0$};
+				\node at (1.72,-1.28) {\scriptsize $g(\mathbf{x})=0$};
+				\draw[gray!70] (1.42,-1.13) -- (1.1,-0.66);
+				% the point, its tangent line and the gradient there
+				\draw[gray!65] (0.043,1.199) -- (1.563,0.439);
+				\draw[->,gray!65,thick] (0.803,0.819) -- (0.043,1.199) node[above left,black] {\scriptsize $\mathbf{x}'(t)$};
+				\draw[gray!70] (0.660,0.890) -- (0.731,1.033) -- (0.874,0.962);
+				\draw[->,thick] (0.803,0.819) -- (1.138,1.490) node[above right] {\scriptsize $\nabla g$};
+				\filldraw (0.803,0.819) circle (1.2pt);
+				% the gradient at two other points of the constraint
+				\draw[->,thick] (-1.316,0.342) -- (-1.868,0.623) node[left] {\scriptsize $\nabla g$};
+				\filldraw (-1.316,0.342) circle (1.2pt);
+				\draw[->,thick] (0.479,-0.940) -- (0.635,-1.540) node[below] {\scriptsize $\nabla g$};
+				\filldraw (0.479,-0.940) circle (1.2pt);
+			\end{tikzpicture}
+			\\[0.4em]
+			{\scriptsize A curve in the plane: at each of its points, $\nabla g$ is perpendicular to the curve, i.e. to the single direction $\mathbf{x}'(t)$ in which we may travel.}
+		\end{minipage}
+		\hfill
+		\begin{minipage}[t]{0.46\textwidth}
+			\centering
+			\vspace{0pt}
+			\begin{tikzpicture}[x={(-0.50cm,-0.34cm)},y={(0.95cm,-0.12cm)},z={(0cm,1.0cm)}]
+				% the constraint surface g = 0, drawn as a mesh
+				\foreach \v in {-1.8,-1.2,-0.6,0,0.6,1.2,1.8}
+					\draw[gray!55,smooth,variable=\u,domain=-1.8:1.8]
+						plot (\u,\v,{0.18*(\u*\u-\v*\v)});
+				\foreach \u in {-1.8,-1.2,-0.6,0,0.6,1.2,1.8}
+					\draw[gray!55,smooth,variable=\v,domain=-1.8:1.8]
+						plot (\u,\v,{0.18*(\u*\u-\v*\v)});
+				\node[left] at (-1.8,-1.8,0) {\scriptsize $g(\mathbf{x})=0$};
+				% the tangent plane at the point: all the allowed directions at once
+				\fill[gray!30,opacity=0.65] (1.65,1.45,0.1116) -- (1.65,-0.45,0.4536)
+					-- (-0.25,-0.45,-0.0252) -- (-0.25,1.45,-0.3672) -- cycle;
+				\draw[gray!60] (1.65,1.45,0.1116) -- (1.65,-0.45,0.4536)
+					-- (-0.25,-0.45,-0.0252) -- (-0.25,1.45,-0.3672) -- cycle;
+				% two allowed directions of travel, spanning that plane
+				\draw[->,gray!75,thick] (0.7,0.5,0.0432) -- (1.65,0.5,0.2826) node[below,black] {\scriptsize $\mathbf{x}'(t)$};
+				\draw[->,gray!75,thick] (0.7,0.5,0.0432) -- (0.7,1.45,-0.1278);
+				% the gradient, perpendicular to the whole plane
+				\draw[->,thick] (0.7,0.5,0.0432) -- (0.359,0.743,1.395) node[above] {\scriptsize $\nabla g$};
+				\filldraw (0.7,0.5,0.0432) circle (1.2pt);
+			\end{tikzpicture}
+			\\[0.4em]
+			{\scriptsize A surface in space: the allowed directions now fill a whole plane (the tangent plane), and $\nabla g$ is perpendicular to all of them at once.}
+		\end{minipage}
+	\end{center}
+
 	\paragraph{Step 2: at a constrained optimum, $f$ does not change along the constraint.}
 	Suppose $\mathbf{x}^*$ minimizes $f$ among the points satisfying the constraint, and let $\mathbf{x}(t)$ be any path inside the constraint set with $\mathbf{x}(0) = \mathbf{x}^*$.
 	The function of one variable
@@ -143,7 +205,63 @@
 	$$
 	So $\nabla f$ is \textit{also} perpendicular to every allowed direction of travel.
 
-	This is the heart of the matter, and it is worth restating in words: if $\nabla f$ had \textit{any} component along the constraint, we could slide a little in that direction, stay allowed, and decrease $f$ --- so we would not be at the optimum.
+	\begin{center}
+		\begin{minipage}[t]{0.46\textwidth}
+			\centering
+			\vspace{0pt}
+			\begin{tikzpicture}[scale=0.85]
+				\path (-3.1,-2.05) (2.9,2.6); % window shared by all the panels of Step 2
+				% level curves of f
+				\draw[gray!40] (0.383,0.729) circle (0.75);
+				\draw[gray!40] (0.383,0.729) circle (1.0);
+				\draw[gray!40] (0.383,0.729) circle (1.2);
+				\draw[gray!40] (0.383,0.729) circle (1.55);
+				\draw[gray!40] (0.383,0.729) circle (1.873);
+				\filldraw[gray!55] (0.383,0.729) circle (0.9pt);
+				% the constraint
+				\draw[very thick,smooth,variable=\x,domain=-1.6:2.2] plot (\x,{0.3*\x*\x-0.6});
+				\node[left] at (-1.62,0.168) {\scriptsize $g(\mathbf{x})=0$};
+				% three positions along the path x(t)
+				\filldraw[gray!70] (0,-0.6) circle (1.2pt);
+				\node[gray!80,below] at (0,-0.68) {\scriptsize $\mathbf{x}(-1)$};
+				\filldraw (1,-0.3) circle (1.5pt);
+				\node[below right] at (1.06,-0.36) {\scriptsize $\mathbf{x}(0)=\mathbf{x}^*$};
+				\filldraw[gray!70] (2,0.6) circle (1.2pt);
+				\node[gray!80,right] at (2.08,0.62) {\scriptsize $\mathbf{x}(1)$};
+			\end{tikzpicture}
+			\\[0.4em]
+			{\scriptsize Walking along the constraint through $\mathbf{x}^*$.}
+		\end{minipage}
+		\hfill
+		\begin{minipage}[t]{0.46\textwidth}
+			\centering
+			\vspace{0pt}
+			\begin{tikzpicture}[scale=1.1]
+				\draw[->] (-1.8,0) -- (1.4,0) node[right] {\scriptsize $t$};
+				\draw[->] (-1.8,0) -- (-1.8,2.0);
+				% the one-variable function t -> f(x(t))
+				\draw[very thick,smooth,variable=\t,domain=-1.5:1.0,samples=60]
+					plot (\t,{1.2*((\t+0.617)*(\t+0.617)+(0.3*(1+\t)*(1+\t)-1.329)*(0.3*(1+\t)*(1+\t)-1.329)-1.3)});
+				\node at (-1.0,1.72) {\scriptsize $t \longmapsto f(\mathbf{x}(t))$};
+				% the two other sampled instants
+				\draw[gray!55,dashed] (-1,0) -- (-1,0.735);
+				\filldraw[gray!70] (-1,0.735) circle (1.2pt);
+				\node[gray!80,below] at (-1,0) {\scriptsize $-1$};
+				\draw[gray!55,dashed] (1,0) -- (1,1.597);
+				\filldraw[gray!70] (1,1.597) circle (1.2pt);
+				\node[gray!80,below] at (1,0) {\scriptsize $1$};
+				% the minimum, with its horizontal tangent
+				\draw[gray!55,dashed] (0,0) -- (0,0.1675);
+				\draw[thick] (-0.55,0.1675) -- (0.55,0.1675);
+				\filldraw (0,0.1675) circle (1.5pt);
+				\node[below] at (0,0) {\scriptsize $0$};
+			\end{tikzpicture}
+			\\[0.4em]
+			{\scriptsize The values of $f$ along that walk: a minimum at $t=0$, so the derivative vanishes and the tangent there is horizontal.}
+		\end{minipage}
+	\end{center}
+
+	This is the heart of the matter, and it is worth restating in words: if $\nabla f$ had \textit{any} component along the constraint, we could slide a little in that direction, stay allowed, and decrease $f$, so we would not be at the optimum.
 
 	\paragraph{Step 3: two vectors perpendicular to the same directions are parallel.}
 	With a single constraint, the allowed directions of travel form a space of dimension $n-1$ (the tangent to the constraint surface).
@@ -152,8 +270,28 @@
 	$$
 	\boxed{\ \nabla f(\mathbf{x}^*) = \lambda \, \nabla g(\mathbf{x}^*)\ }
 	$$
-	This --- together with the constraint $g(\mathbf{x}^*) = 0$ itself --- is the real content of the method.
+	This, together with the constraint $g(\mathbf{x}^*) = 0$ itself, is the real content of the method.
 	The number $\lambda$ appears simply as the proportionality factor between two parallel vectors.
+
+	\begin{center}
+		\begin{tikzpicture}[scale=1.7]
+			% the constraint curve g = 0
+			\draw[very thick,domain=-2.1:2.1,smooth,variable=\x] plot (\x,{0.25*\x*\x});
+			\node[right] at (2.1,1.05) {\scriptsize $g(\mathbf{x})=0$};
+			% the point x*
+			\filldraw (1,0.25) circle (1.2pt);
+			\node[below right] at (1.03,0.22) {\scriptsize $\mathbf{x}^*$};
+			% tangent direction (allowed direction of travel)
+			\draw[gray!50] (1,0.25) -- ++(-0.98,-0.49);
+			\draw[->,gray!70,thick] (1,0.25) -- ++(0.98,0.49) node[below right,black] {\scriptsize $\mathbf{x}'(0)$};
+			% right angle mark
+			\draw[gray!60] ($(1,0.25)+(0.20,0.10)$) -- ++(-0.089,0.179) -- ++(-0.20,-0.10);
+			% the two parallel gradients
+			\draw[->,thick] ($(1,0.25)+(0.045,0.023)$) -- ++(-0.447,0.894) node[above] {\scriptsize $\nabla g$};
+			\draw[->,thick,gray!70] ($(1,0.25)-(0.045,0.023)$) -- ++(-0.313,0.626) node[left,black] {\scriptsize $\nabla f$};
+		\end{tikzpicture}
+	\end{center}
+	Both gradients are perpendicular to the \textit{same} line of allowed travel, so they must point along the same axis: they are parallel.
 
 	\paragraph{Step 4: the Lagrangian is just bookkeeping.}
 	We now have two conditions to satisfy simultaneously:
@@ -175,7 +313,7 @@
 	\qquad \Longleftrightarrow \qquad
 	g(\mathbf{x}) = 0
 	$$
-	which is the second one --- the constraint comes back by itself.
+	which is the second one (the constraint comes back by itself).
 
 	So the Lagrangian is not magic: it is a device that packs the geometric condition \textit{and} the constraint into a single equation $\nabla \mathcal{L} = \mathbf{0}$, which we can then hand to the usual unconstrained machinery.
 	Treating $\lambda$ as one more variable is exactly what makes the constraint reappear.
@@ -183,7 +321,7 @@
 	\paragraph{The same picture with level curves.}
 	Imagine walking along the constraint curve while watching the level curves of $f$.
 	As long as you are crossing level curves, $f$ is changing, so you can keep going down.
-	You stop descending exactly when the constraint curve stops crossing the level curves and \textit{touches} one instead --- that is, when the two curves are \textbf{tangent}.
+	You stop descending exactly when the constraint curve stops crossing the level curves and \textit{touches} one instead, that is, when the two curves are \textbf{tangent}.
 	Two curves are tangent exactly when their normals are parallel, i.e. when $\nabla f = \lambda \nabla g$.
 
 	\noindent \textbf{Example:}
@@ -194,16 +332,38 @@
 	\nabla g = \begin{pmatrix} 1 \\ 1 \end{pmatrix}
 	$$
 	These are parallel exactly when $2x = 2y$, i.e. $x = y$; combined with the constraint, this gives $x = y = \frac{1}{2}$ straight away.
-	The level curves of $f$ are circles centred on the origin, and the answer is the point where the line $x+y=1$ is tangent to one of them --- the closest point of the line to the origin, as expected.
+	The level curves of $f$ are circles centred on the origin, and the answer is the point where the line $x+y=1$ is tangent to one of them (the closest point of the line to the origin, as expected).
 
-	\paragraph{Three warnings.}
+	\begin{center}
+		\begin{tikzpicture}[scale=2.2]
+			\draw[->] (-0.6,0) -- (1.7,0) node[right] {\scriptsize $x$};
+			\draw[->] (0,-0.6) -- (0,1.7) node[above] {\scriptsize $y$};
+			% level curves of f: circles centred at the origin
+			\draw[gray!45] (0,0) circle (0.35);
+			\draw[gray!45] (0,0) circle (0.55);
+			\draw[thick,gray!90] (0,0) circle (0.7071);
+			\draw[gray!45] (0,0) circle (0.95);
+			\node[gray!90] at (-0.72,-1.02) {\scriptsize $x^2+y^2=\frac{1}{2}$};
+			\draw[gray!70] (-0.63,-0.88) -- (-0.5,-0.5);
+			% the constraint line x + y = 1
+			\draw[very thick] (-0.45,1.45) -- (1.45,-0.45);
+			\node[below right] at (1.44,-0.46) {\scriptsize $x+y=1$};
+			% the tangency point
+			\filldraw (0.5,0.5) circle (1.3pt);
+			\node[below left] at (0.47,0.47) {\scriptsize $\left(\frac{1}{2},\frac{1}{2}\right)$};
+			% the two parallel gradients
+			\draw[->,thick] (0.53,0.47) -- ++(0.5,0.5) node[right] {\scriptsize $\nabla f$};
+			\draw[->,thick,gray!80] (0.47,0.53) -- ++(0.35,0.35) node[above,black] {\scriptsize $\nabla g$};
+		\end{tikzpicture}
+	\end{center}
+	Walking along the line from either side, we cross smaller and smaller circles; we stop descending exactly where the line \textit{touches} one instead of crossing it.
+	There, the normal to the line ($\nabla g$) and the normal to the level curve ($\nabla f$) point in the same direction, and the multiplier $\lambda$ is the ratio of their lengths.
+
+	\paragraph{Warnings:}
 	\begin{itemize}
 		\item \textbf{Do not try to minimize $\mathcal{L}$.}
 		The solution is a \textit{stationary} point of $\mathcal{L}$, not a minimum of it: $\mathcal{L}$ typically has a saddle point there (it is minimal in $\mathbf{x}$, but maximal in $\lambda$).
 		Only $\nabla \mathcal{L} = \mathbf{0}$ matters.
-		\item \textbf{Stationary does not mean minimal.}
-		Exactly as in the unconstrained case, $\nabla \mathcal{L} = \mathbf{0}$ finds minima, maxima and saddle points alike.
-		When several points come out, compare the values of $f$ to decide which is which.
 		\item \textbf{The argument needs $\nabla g \neq \mathbf{0}$.}
 		If $\nabla g$ vanishes at the solution, Step 3 collapses (the "direction perpendicular to the constraint" is not well defined) and the method can miss the answer.
 		This is rare in practice, but it is the reason the theorem always comes with such an assumption.
@@ -215,7 +375,7 @@
 	$$
 	\nabla f = \sum_{i=1}^m \lambda_i \nabla g_i
 	$$
-	which is precisely $\nabla_\mathbf{x} \mathcal{L} = \mathbf{0}$ for the Lagrangian written above --- with one multiplier per constraint.
+	which is precisely $\nabla_\mathbf{x} \mathcal{L} = \mathbf{0}$ for the Lagrangian written above, with one multiplier per constraint.
 
 	\textbf{Example:}
 	Minimize $f(x, y) = x^2 + y^2$ subject to $x + y = 1$.
@@ -298,7 +458,7 @@
 
 	\subsubsection{Why Does It Work?}
 
-	Everything of the equality case still applies --- after all, we have turned the inequalities into equalities.
+	Everything of the equality case still applies (after all, we have turned the inequalities into equalities).
 	Two new things happen, and both are worth understanding.
 
 	\paragraph{The derivative in $s$ produces a case distinction.}
@@ -331,7 +491,7 @@
 
 	Suppose the constraint $g(\mathbf{x}) \geq 0$ is active at the solution, so we sit on the boundary $g = 0$, and recall from the equality case that $\nabla f = \lambda \nabla g$ there.
 	Now, $\nabla g$ points towards increasing $g$, that is, \textit{towards the inside} of the allowed region.
-	We are at a genuine minimum only if $f$ increases as we step inside --- otherwise we would step in and do better.
+	We are at a genuine minimum only if $f$ increases as we step inside (otherwise we would step in and do better).
 	The increase of $f$ in the direction $\nabla g$ is
 	$$
 	\nabla f \cdot \nabla g = \lambda \, \nabla g \cdot \nabla g = \lambda \, \|\nabla g\|^2
@@ -342,6 +502,61 @@
 	$$
 	So the sign condition is not a technicality: it is what distinguishes "the constraint is holding the solution back" (genuine constrained minimum, $\lambda > 0$) from "the constraint is pushing the solution outwards" (not a minimum at all, $\lambda < 0$).
 	A negative multiplier is how the method tells us that we have found the wrong kind of point, and that the case should be discarded.
+
+	\begin{center}
+		\begin{tikzpicture}[scale=1.15]
+			\path (-2.2,-2.35) (2.1,1.95); % common bounding box, so both pictures align
+			% feasible region x + y >= 1
+			\fill[gray!12] (-0.6,1.6) -- (1.6,-0.6) -- (1.6,1.6) -- cycle;
+			\draw[->] (-1.7,0) -- (1.85,0) node[right] {\scriptsize $x$};
+			\draw[->] (0,-1.7) -- (0,1.85) node[above] {\scriptsize $y$};
+			% level curves of f
+			\draw[gray!45] (0,0) circle (0.3);
+			\draw[gray!45] (0,0) circle (0.5);
+			\draw[thick,gray!85] (0,0) circle (0.7071);
+			\draw[gray!45] (0,0) circle (1.0);
+			\draw[gray!45] (0,0) circle (1.3);
+			% the constraint
+			\draw[very thick] (-0.6,1.6) -- (1.6,-0.6);
+			\node[below right] at (1.55,-0.55) {\scriptsize $x+y=1$};
+			\node[gray!85] at (0.6,1.35) {\scriptsize $x+y\geq1$};
+			% unconstrained minimum, now forbidden
+			\filldraw[gray!70] (0,0) circle (1.1pt);
+			\node[gray!85] at (-1.55,-1.35) {\scriptsize min of $f$};
+			\draw[gray!70] (-1.25,-1.22) -- (-0.05,-0.05);
+			% the constrained optimum
+			\filldraw (0.5,0.5) circle (1.3pt);
+			\node[below left] at (0.47,0.47) {\scriptsize $\left(\frac{1}{2},\frac{1}{2}\right)$};
+			\draw[->,thick] (0.5,0.5) -- ++(0.45,0.45) node[right] {\scriptsize $\nabla g$};
+			\node at (0,-2.15) {\scriptsize \textbf{active}: $\lambda = 1 > 0$};
+		\end{tikzpicture}
+		\hspace{0.5cm}
+		\begin{tikzpicture}[scale=1.15]
+			\path (-2.2,-2.35) (2.1,1.95); % same window as the picture on the left
+			% feasible region x + y >= -1
+			\fill[gray!12] (-1.6,0.6) -- (0.6,-1.6) -- (1.6,-1.6) -- (1.6,1.6) -- (-1.6,1.6) -- cycle;
+			\draw[->] (-1.7,0) -- (1.85,0) node[right] {\scriptsize $x$};
+			\draw[->] (0,-1.7) -- (0,1.85) node[above] {\scriptsize $y$};
+			% level curves of f
+			\draw[gray!45] (0,0) circle (0.3);
+			\draw[gray!45] (0,0) circle (0.5);
+			\draw[gray!45] (0,0) circle (0.7071);
+			\draw[gray!45] (0,0) circle (1.0);
+			\draw[gray!45] (0,0) circle (1.3);
+			% the constraint, never reached
+			\draw[very thick] (-1.6,0.6) -- (0.6,-1.6);
+			\node[below right] at (0.55,-1.55) {\scriptsize $x+y=-1$};
+			\node[gray!85] at (0.6,1.35) {\scriptsize $x+y\geq-1$};
+			% the optimum: the unconstrained one
+			\filldraw (0,0) circle (1.3pt);
+			\node at (1.35,-0.75) {\scriptsize $(0,0)$};
+			\draw[gray!70] (1.1,-0.65) -- (0.05,-0.04);
+			\node at (0,-2.15) {\scriptsize \textbf{inactive}: $\lambda = 0$};
+		\end{tikzpicture}
+	\end{center}
+	On the left the unconstrained minimum $(0,0)$ is forbidden: the solution is pushed onto the boundary, the constraint is active and $\lambda > 0$.
+	On the right the same unconstrained minimum already satisfies the constraint: the boundary is never reached, the constraint is inactive and $\lambda = 0$.
+	Notice how, in the active case, $\nabla g$ points \textit{into} the allowed region, and so must $\nabla f = \lambda \nabla g$, which is precisely the statement $\lambda \geq 0$.
 
 	Note also that this is where our sign convention pays off: had we written $\mathcal{L} = f + \lambda(g - s^2)$, the very same reasoning would give $\lambda \leq 0$ instead.
 
@@ -356,7 +571,7 @@
 	\qquad
 	\lambda_i \, g_i(\mathbf{x}) = 0
 	$$
-	These are the \textbf{Karush-Kuhn-Tucker (KKT) conditions}, and they are the foundation of most of constrained optimization --- including the Support Vector Machines of the Binary Classification session.
+	These are the \textbf{Karush-Kuhn-Tucker (KKT) conditions}, and they are the foundation of most of constrained optimization, including the Support Vector Machines of the Binary Classification session.
 
 	\textbf{Example:}
 	Minimizing a Quadratic Function with an Inequality Constraint\\
